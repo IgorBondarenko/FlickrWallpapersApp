@@ -5,10 +5,10 @@ package com.beautiful_wallpapers_hd_qhd.core.di;
  */
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
 
 import com.beautiful_wallpapers_hd_qhd.core.Device;
+import com.beautiful_wallpapers_hd_qhd.core.billing.InAppConfig;
 import com.beautiful_wallpapers_hd_qhd.core.controller.AnimationController;
 import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesController;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
@@ -16,7 +16,7 @@ import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
 import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrAPI;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import javax.inject.Singleton;
+import org.onepf.oms.OpenIabHelper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -73,5 +73,14 @@ public class MyModule {
     @Provides
     public FirebaseAnalytics provideFirebaseAnalytics(){
         return FirebaseAnalytics.getInstance(mContext);
+    }
+
+    @Provides
+    public OpenIabHelper provideOpenIabHelper(){
+        OpenIabHelper.Options.Builder builder = new OpenIabHelper.Options.Builder()
+                .setStoreSearchStrategy(OpenIabHelper.Options.SEARCH_STRATEGY_INSTALLER_THEN_BEST_FIT)
+                .setVerifyMode(OpenIabHelper.Options.VERIFY_EVERYTHING)
+                .addStoreKeys(InAppConfig.STORE_KEYS_MAP);
+        return new OpenIabHelper(mContext, builder.build());
     }
 }

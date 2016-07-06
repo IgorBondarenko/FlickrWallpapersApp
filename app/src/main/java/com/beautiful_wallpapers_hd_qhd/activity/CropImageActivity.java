@@ -106,7 +106,6 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
         mCropImageView.setFixedAspectRatio(true);
         mCropImageView.setGuidelines(1);
 
-
         mAspectRatioCheckBox.setOnCheckedChangeListener(this);
         mNoCropCheckBox.setOnCheckedChangeListener(this);
         mWidthSeekBar.setOnSeekBarChangeListener(this);
@@ -213,7 +212,6 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
             v.startAnimation(anim);
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){

@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="org.onepf.openiab.permission.BILLING" />
 
     <application
         android:name=".core.WallpapersApplication"
@@ -97,6 +99,15 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog">
             <intent-filter>
                 <action android:name="com.beautiful_wallpapers_hd_qhd.AUTO_UPDATE_DIALOG"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.dialog.BuyProDialog"
+            android:label="@string/action_buy_pro"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.BUY_PRO_DIALOG"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

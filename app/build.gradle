@@ -12,6 +12,13 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        maven { url 'https://raw.githubusercontent.com/onepf/OPF-mvn-repo/master/' }
+        jcenter()
+    }
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -74,4 +81,6 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     //firebase
     compile 'com.google.firebase:firebase-core:9.2.0'
+    //openiab
+    compile 'org.onepf:openiab:0.9.8.4'
 }

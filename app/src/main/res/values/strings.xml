@@ -35,6 +35,7 @@
     <string name="action_restore_pro">Restore PRO-version</string>
     <string name="action_change_quality">Image quality</string>
     <string name="action_set_auto_update">Auto changing of wallpapers</string>
+    <string name="action_restore_purchase">Restore purchases</string>
     <string name="action_message">Message</string>
     <string name="action_search">Search</string>
     <string name="action_share">Share</string>
@@ -152,6 +153,7 @@
     <string name="author_web_profile_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTHOR_WEB_PROFILE_ACTIVITY</string>
     <string name="auto_update_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTO_UPDATE_DIALOG</string>
     <string name="exit_app_dialog" translatable="false">com.beautiful_wallpapers_hd_qhd.EXIT_DIALOG</string>
+    <string name="buy_pro_dialog" translatable="false">com.beautiful_wallpapers_hd_qhd.BUY_PRO_DIALOG</string>
 
     <string name="main_activity" translatable="false">com.wallpapers_hd_qhd.MAIN_ACTIVITY</string>
     <string name="preview_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.PREVIEW_ACTIVITY</string>
@@ -164,7 +166,6 @@
     <string name="rate_activity" translatable="false">com.wallpapers_hd_qhd.RATE_ACTIVITY</string>
     <string name="process_app_activity" translatable="false">com.wallpapers_hd_qhd.PROCESS_APP_ACTIVITY</string>
 
-    <string name="buy_pro_activity" translatable="false">com.wallpapers_hd_qhd.BUY_PRO_ACTIVITY</string>
     <string name="choose_account_activity" translatable="false">com.wallpapers_hd_qhd.CHOOSE_ACCOUNT_ACTIVITY</string>
     <string name="available_in_pro_activity" translatable="false">com.wallpapers_hd_qhd.AVAILABLE_IN_PRO_ACTIVITY</string>
     <string name="delete_old_version_activity" translatable="false">com.wallpapers_hd_qhd.DELETE_OLD_VERSION_ACTIVITY</string>
@@ -189,5 +190,9 @@
     <string name="flickr_author_page_url" translatable="false"><a href="">http://flickr.com/%1$s</a></string>
     <string name="hide_information">HIDE INFORMATION</string>
     <string name="view_more">VIEW MORE INFORMATION</string>
+    <string name="buy_pro_advantages_text1">Disable advertisement</string>
+    <string name="buy_pro_advantages_text2">Added the ability to automatically change the wallpaper on schedule</string>
+    <string name="restart_app">Please restart app</string>
+    <string name="action_buy_pro">Buy PRO-vresion</string>
 
 </resources>

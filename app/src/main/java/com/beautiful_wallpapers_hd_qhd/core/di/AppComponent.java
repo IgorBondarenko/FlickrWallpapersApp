@@ -6,6 +6,7 @@ import com.beautiful_wallpapers_hd_qhd.activity.MainActivity;
 import com.beautiful_wallpapers_hd_qhd.activity.PreviewActivity;
 import com.beautiful_wallpapers_hd_qhd.activity.ScalingImageActivity;
 import com.beautiful_wallpapers_hd_qhd.activity.dialog.AutoUpdateDialog;
+import com.beautiful_wallpapers_hd_qhd.activity.dialog.BuyProDialog;
 import com.beautiful_wallpapers_hd_qhd.core.FirebaseAnalytic;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.ImageRecyclerAdapter;
 
@@ -26,5 +27,6 @@ public interface AppComponent {
     void inject(ScalingImageActivity activity);
     void inject(ImageRecyclerAdapter adapter);
     void inject(FirebaseAnalytic component);
+    void inject(BuyProDialog dialog);
 
 }

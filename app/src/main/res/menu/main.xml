@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_restore_pro"
-        app:showAsAction="never" />
 
     <item android:id="@+id/action_search"
         android:title="@string/action_change_quality"
@@ -18,4 +13,9 @@
         android:title="@string/action_set_auto_update"
         android:icon="@drawable/ic_event"
         app:showAsAction="always"/>
+
+    <item android:id="@+id/action_restore_purchase"
+        android:title="@string/action_restore_purchase"
+        app:showAsAction="never"/>
+
 </menu>
