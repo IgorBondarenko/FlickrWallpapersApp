@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:visibility="visible">
+
+    <!--<com.wallpapers_hd_qhd.view.ResizablePortraitImageView-->
+    <com.etsy.android.grid.util.DynamicHeightImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/small_img"
+            android:transitionName="transition_image"
+            android:adjustViewBounds="true"/>
+
+    <!--android:layout_alignEnd="@+id/small_img"-->
+    <!--android:layout_marginRight="5dp"-->
+
+    <ImageView
+            android:id="@+id/favourite_img"
+            android:src="@drawable/ic_action_important"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+
+            android:visibility="invisible"/>
+    <ImageView
+            android:id="@+id/new_img"
+            android:src="@drawable/ic_new_releases"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+
+            android:visibility="invisible"/>
+
+</RelativeLayout>

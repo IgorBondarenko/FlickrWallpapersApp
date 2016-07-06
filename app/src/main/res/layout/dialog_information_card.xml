@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/dialog_card_margin_horizontal"
+    android:paddingRight="@dimen/dialog_card_margin_horizontal"
+    android:paddingTop="@dimen/dialog_card_margin_vertical"
+    android:paddingBottom="@dimen/dialog_card_margin_vertical"
+    android:weightSum="100"
+    android:gravity="center_vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/information_card"
+        android:transitionName="transition_card"
+        card:cardBackgroundColor="@android:color/white"
+        card:cardElevation="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--card header-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/cardHeaderColor"
+                android:id="@+id/information_card_header">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="24dp"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:text="@string/preview_image_label"
+                    android:textSize="@dimen/card_header_text_size"
+                    android:id="@+id/inform_card_title" />
+
+            </LinearLayout>
+
+            <!--list view-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" >
+
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/information_lw"
+                    android:divider="@color/bright_foreground_disabled_material_light"
+                    android:dividerHeight="0.5dp" />
+
+            </RelativeLayout>
+
+            <!--divider-->
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#50aaaaaa">
+            </LinearLayout>
+
+            <!--button panel-->
+            <RelativeLayout
+                android:id="@+id/hide_info"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:nestedScrollingEnabled="false">
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/hide_information"
+                    android:id="@+id/textView2"
+                    android:textStyle="bold"
+                    android:textColor="@color/abc_secondary_text_material_light" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/imageView2"
+                    android:src="@drawable/ic_hide_information"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

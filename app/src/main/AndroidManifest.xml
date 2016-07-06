@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.beautiful_wallpapers_hd_qhd">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <application
+        android:name=".core.WallpapersApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!--activities-->
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.PreviewActivity"
+            android:label="Preview"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.PREVIEW_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.AuthorWebProfileActivity"
+            android:label="Author Profile"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.AUTHOR_WEB_PROFILE_ACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.AuthorPageActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.AUTHOR_PAGE_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.dialog.InformationCardDialog"
+            android:theme="@style/CardDialog">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.DIALOG_CARD_INFORMATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.ScalingImageActivity">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.SCALING_IMAGE_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.CropImageActivity">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.CROP_IMAGE_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.dialog.ExitDialog"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:label="@string/want_exit">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.EXIT_DIALOG"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.dialog.AutoUpdateDialog"
+            android:label="@string/action_set_auto_update"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.AUTO_UPDATE_DIALOG"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.dialog.LoginActivity">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.LOGIN_DIALOG"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <!--receivers-->
+        <receiver
+            android:name="com.beautiful_wallpapers_hd_qhd.core.receiver.notification.NotificationReceiver">
+        </receiver>
+
+        <receiver android:name=".core.receiver.notification.NotificationOnBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".core.receiver.updater.UpdateWallpapersOnBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".core.receiver.updater.UpdateWallpapersReceiver">
+        </receiver>
+
+        <!--services-->
+        <service android:name=".core.service.UpdateWallpapersService"
+            android:enabled="true"/>
+
+    </application>
+
+</manifest>

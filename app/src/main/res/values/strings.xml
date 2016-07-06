@@ -1,0 +1,193 @@
+<resources>
+    <string name="app_name">Beautiful Wallpapers HD/QHD</string>
+
+    <string name="sections_title">Categories</string>
+    <string name="title_section1">All</string>
+    <string name="title_section2">Bought</string>
+    <string name="title_section3">Favourites</string>
+    <string name="title_section4">New</string>
+    <string name="title_section23">Subscriptions</string>
+
+    <string name="title_section5">Landscapes</string>
+    <string name="title_section6">Buildings &amp; Cities</string>
+    <string name="title_section7">Castles</string>
+    <string name="title_section8">Sea</string>
+    <string name="title_section9">Textures</string>
+
+    <string name="title_section10">Flowers</string>
+    <string name="title_section11">Seasons</string>
+
+    <string name="title_section12">People</string>
+    <string name="title_section13">Animals</string>
+    <string name="title_section14">Nature</string>
+    <string name="title_section15">Winter</string>
+    <string name="title_section16">Christmas</string>
+    <string name="title_section17">Still life</string>
+    <string name="title_section18">Sky</string>
+    <string name="title_section19">Dogs</string>
+    <string name="title_section20">Auto</string>
+    <string name="title_section21">Trees</string>
+    <string name="title_section22">Other</string>
+
+
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="action_restore_pro">Restore PRO-version</string>
+    <string name="action_change_quality">Image quality</string>
+    <string name="action_set_auto_update">Auto changing of wallpapers</string>
+    <string name="action_message">Message</string>
+    <string name="action_search">Search</string>
+    <string name="action_share">Share</string>
+
+    <string name="successfully_installed">Wallpapers successfully installed!</string>
+    <string name="preview_set_as_btn">SET AS WALLPAPERS</string>
+    <string name="preview_save_btn">SAVE</string>
+
+    <!--<string name="preview_image_label">IMAGE PARAMETERS</string>-->
+    <string name="preview_image_label">Image parameters</string>
+    <string name="preview_author_label">Author parameters</string>
+
+    <string name="menu_change_view" translatable="false">Change view</string>
+    <string name="menu_grid" translatable="false">Grid</string>
+    <string name="menu_list" translatable="false">List</string>
+
+    <string name="notification_text">Break the uniformity of life. Change wallpapers.</string>
+    <string name="save_btn">SAVE</string>
+    <string name="buy_medium_btn">BUY $0.99</string>
+    <string name="buy_large_btn">BUY $2.99</string>
+    <string name="preview_add_to_favourite">Image added to favorites</string>
+    <string name="preview_remove_from_favourite">Image removed from favorites</string>
+    <string name="crop_proportions_label">Aspect ratio settings</string>
+    <string name="crop_proportions_width">Width</string>
+    <string name="crop_proportions_height">Height</string>
+    <string name="crop_fixed_aspect_ratio">Free aspect ratio</string>
+    <string name="warning_message">Check your connection\n and try again</string>
+    <string name="retry_btn">Retry</string>
+    <string name="buy_pro">Buy PRO-version</string>
+
+    <string name="share_using">Share image using:</string>
+    <string name="share_text">More exclusive #photos are available here: \n%1$s #wallpapers #backgrounds #android</string>
+
+    <string name="licence_cancel">CANCEL</string>
+    <string name="licence_continue">CONTINUE</string>
+
+    <string name="camera">Camera</string>
+    <string name="resolution">Resolution</string>
+    <string name="aperture">Aperture</string>
+    <string name="focal_length">Focal length</string>
+    <string name="exposure_time">Exposure time</string>
+    <string name="iso">ISO</string>
+    <string name="white_balance">White balance</string>
+    <string name="metering_mode">Metering mode</string>
+    <string name="exposure">Exposure</string>
+    <string name="sd_size">SD size</string>
+    <string name="fhd_size">FullHD size</string>
+    <string name="original_size">Original size</string>
+    <string name="crop_activity">Image crop</string>
+
+    <string name="downloading_folder">Photo is available in \n\"/Download/PhotoCollection\" folder</string>
+    <string name="want_exit">Are you really want to quit?</string>
+    <string name="quit">Quit</string>
+
+    <string name="quit_btn">QUIT</string>
+    <string name="license_hint1" translatable="false">(Standard license)</string>
+    <string name="license_hint2" translatable="false">(Advanced license)</string>
+    <string name="save_hint">* - See image parameters</string>
+    <string name="about_version_title">Version:</string>
+    <string name="about_email_title" translatable="false">E-mail:</string>
+    <string name="about_email" translatable="false">wallpapers.hd.qhd@gmail.com</string>
+    <string name="about_site_title" translatable="false">Site:</string>
+    <string name="about_site" translatable="false"><a href="http://www.wallpapers-hd-qhd.com">www.wallpapers-hd-qhd.com</a></string>
+    <string name="about_google" translatable="false"><a href="https://plus.google.com/104163561837666997168/posts">Google+</a></string>
+    <string name="about_facebook" translatable="false"><a href="https://www.facebook.com/wallpapers.hd.qhd">Facebook</a></string>
+    <string name="about_vkontakte" translatable="false"><a href="http://vk.com/club84677615">Vkontakte</a></string>
+
+    <string name="about_copyright" translatable="false">Copyright © Ivan Farionov, 2015</string>
+    <string name="about_text">Wallpapers HD / QHD is the best choice to make your screen unique and beautiful.</string>
+
+    <string name="localization_chanel" translatable="false">en</string>
+    <string name="auto_update_already_run">The service is already running.</string>
+    <string name="auto_update_already_stoped">Service is not running.</string>
+    <string name="auto_update_condition">Condition:</string>
+    <string name="auto_update_condition_off">OFF</string>
+    <string name="auto_update_condition_on">ON</string>
+    <string name="auto_update_empty_favorites">Error! There are no photos in \"Favorites\" folder.</string>
+    <string name="auto_update_hint_start">ENABLE</string>
+    <string name="auto_update_hint_stop">DISABLE</string>
+    <string name="auto_update_hint_cancel">CANCEL</string>
+    <string name="auto_update_hint_restart">RESTART</string>
+
+    <string name="auto_update_hint_text">Add the photos to \"Favorites \" and the app will automatically change your desktop wallpaper at specified intervals.</string>
+    <string name="buy_pro_advantages_title">Advantages of PRO-version:</string>
+    <string name="buy_pro_button">BUY $1.99</string>
+    <string name="buy_pro_title">Buy PRO-version</string>
+    <string name="choose_account_continue_button">CONTINUE</string>
+    <string name="choose_account_title">Please, select the account to link the purchase:</string>
+    <string name="crop_without_cropping">Install without cropping</string>
+    <string name="auto_update_hint_title">How does it\'s work?</string>
+    <string name="auto_update_period">Please, choose updating time:</string>
+    <string name="auto_update_sb_title1">every day</string>
+    <string name="auto_update_sb_title2">every 3 days</string>
+    <string name="auto_update_sb_title3">every week</string>
+    <string name="auto_update_sb_title4">every 2 weeks</string>
+    <string name="auto_update_sb_title5">every month</string>
+    <string name="auto_update_start_success">Service started successfully.</string>
+    <string name="auto_update_restart_success">Service restarted successfully.</string>
+    <string name="auto_update_stop_success">The service is stopped.</string>
+    <string name="buy_pro_advantages_text"><b>-</b> Disable advertisement\n<b>-</b> Added the ability to automatically change the wallpaper on schedule</string>
+    <string name="available_in_pro">The feature of auto change wallpapers by schedule is available in PRO-version</string>
+    <string name="available_in_pro_disable_ad">Also advertising is disabled in PRO-version</string>
+    <string name="crop_mode_label">Wallpapers mode</string>
+    <string name="crop_mode_stable">Stable</string>
+    <string name="save_title">Save image</string>
+
+    <string name="no_permission">No permission to download image</string>
+    <string name="no_permission_try_again">Try again</string>
+
+    <string name="image_quality_low">Low image quality</string>
+    <string name="image_quality_high">High image quality</string>
+
+    <!-- activity-->
+    <string name="author_page_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTHOR_PAGE_ACTIVITY</string>
+    <string name="author_web_profile_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTHOR_WEB_PROFILE_ACTIVITY</string>
+    <string name="auto_update_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTO_UPDATE_DIALOG</string>
+    <string name="exit_app_dialog" translatable="false">com.beautiful_wallpapers_hd_qhd.EXIT_DIALOG</string>
+
+    <string name="main_activity" translatable="false">com.wallpapers_hd_qhd.MAIN_ACTIVITY</string>
+    <string name="preview_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.PREVIEW_ACTIVITY</string>
+    <string name="full_screen_activity" translatable="false">com.wallpapers_hd_qhd.FULL_SCREEN_ACTIVITY</string>
+    <string name="save_activity" translatable="false">com.wallpapers_hd_qhd.SAVE_ACTIVITY</string>
+    <string name="crop_image_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.CROP_IMAGE_ACTIVITY</string>
+    <string name="tutorial_activity" translatable="false">com.wallpapers_hd_qhd.TUTORIAL_ACTIVITY</string>
+    <string name="licence_activity" translatable="false">com.wallpapers_hd_qhd.LICENCE_ACTIVITY</string>
+    <string name="about_activity" translatable="false">com.wallpapers_hd_qhd.ABOUT_ACTIVITY</string>
+    <string name="rate_activity" translatable="false">com.wallpapers_hd_qhd.RATE_ACTIVITY</string>
+    <string name="process_app_activity" translatable="false">com.wallpapers_hd_qhd.PROCESS_APP_ACTIVITY</string>
+
+    <string name="buy_pro_activity" translatable="false">com.wallpapers_hd_qhd.BUY_PRO_ACTIVITY</string>
+    <string name="choose_account_activity" translatable="false">com.wallpapers_hd_qhd.CHOOSE_ACCOUNT_ACTIVITY</string>
+    <string name="available_in_pro_activity" translatable="false">com.wallpapers_hd_qhd.AVAILABLE_IN_PRO_ACTIVITY</string>
+    <string name="delete_old_version_activity" translatable="false">com.wallpapers_hd_qhd.DELETE_OLD_VERSION_ACTIVITY</string>
+    <string name="news_activity" translatable="false">com.wallpapers_hd_qhd.NEWS_ACTIVITY</string>
+
+    <!--intent extras-->
+    <string name="flickr_author_id" translatable="false">flickr_author_id</string>
+    <string name="flickr_author_realname" translatable="false">flickr_author_realname</string>
+    <string name="flickr_author_username" translatable="false">flickr_author_username</string>
+
+    <!-- id-->
+    <!-- facebook-->
+    <string name="app_id" translatable="false">388087941388995</string>
+
+    <string name="title_activity_main" translatable="false">MainActivity</string>
+    <string name="title_activity_scrolling" translatable="false">ScrollingActivity</string>
+
+
+    <string name="image_view_holder" translatable="false">adapter1</string>
+    <string name="author_view_holder" translatable="false">adapter2</string>
+
+    <string name="flickr_author_page_url" translatable="false"><a href="">http://flickr.com/%1$s</a></string>
+    <string name="hide_information">HIDE INFORMATION</string>
+    <string name="view_more">VIEW MORE INFORMATION</string>
+
+</resources>

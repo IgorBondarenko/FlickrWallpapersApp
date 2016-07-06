@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/want_exit"
+        android:id="@+id/dialog_exit_tv"
+        android:layout_gravity="center"
+        android:textColor="@android:color/black"
+        android:layout_margin="@dimen/dialog_text_margin"
+        android:visibility="gone"
+        android:textStyle="bold"
+        android:textSize="@dimen/dialog_text_size" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_margin="@dimen/dialog_button_margin">
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dialog_button_height"
+                android:text="@string/quit_btn"
+                android:id="@+id/confirm_quit_btn"
+                style="?android:attr/borderlessButtonStyle"
+                android:textColor="@color/buttonGrey"
+                android:layout_marginRight="@dimen/dialog_button_margin_half" />
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dialog_button_height"
+                android:text="@string/licence_cancel"
+                android:id="@+id/cancel_quit_btn"
+                style="?android:attr/borderlessButtonStyle"
+                android:textColor="#ff51a9ee"
+                android:layout_marginLeft="@dimen/dialog_button_margin_half" />
+
+        <!--style="@style/Widget.AppCompat.ActionButton"-->
+
+    </LinearLayout>
+
+</LinearLayout>

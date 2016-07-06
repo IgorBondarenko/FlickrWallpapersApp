@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView4">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:gravity="top"
+                android:layout_marginTop="24dp"
+                android:layout_marginRight="24dp">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/auto_update_condition"
+                        android:id="@+id/textView21"
+                        android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=" "
+                    android:id="@+id/textView25"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/auto_update_condition_off"
+                        android:id="@+id/auto_update_state_off"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/holo_red_light"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/auto_update_condition_on"
+                        android:id="@+id/auto_update_state_on"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/holo_green_light"/>
+            </LinearLayout>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/auto_update_period"
+                    android:id="@+id/textView18"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/black"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Medium Text"
+                        android:id="@+id/auto_sb_text"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:textColor="@android:color/black"/>
+                <SeekBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:max="4"
+                        android:id="@+id/auto_update_sb"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:indeterminate="false"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+            <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"
+                    android:background="#FFDDDDDD"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"/>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center"
+                    android:id="@+id/auto_hint_btn"
+                    android:onClick="hint">
+                <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imageButton"
+                        android:background="@null"
+                        android:src="@drawable/ic_announcement"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/auto_update_hint_title"
+                        android:id="@+id/textView19"/>
+
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="#30384848"
+                    android:id="@+id/auto_hint"
+                    android:visibility="gone"
+                    android:gravity="center">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/auto_update_hint_text"
+                        android:gravity="center"
+                        android:id="@+id/textView20"
+                        android:textColor="@android:color/black"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_margin="@dimen/dialog_button_margin"
+                android:id="@+id/service_control_btn_layout"
+                android:visibility="visible">
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dialog_button_height"
+                        android:text="@string/auto_update_hint_stop"
+                        android:id="@+id/auto_stop_btn"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:textColor="@color/buttonGrey"
+                        android:layout_marginRight="@dimen/dialog_button_margin_half" />
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dialog_button_height"
+                        android:text="@string/auto_update_hint_start"
+                        android:id="@+id/auto_start_btn"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:textColor="@color/primaryColor"
+                        android:layout_marginLeft="@dimen/dialog_button_margin_half" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_margin="@dimen/dialog_button_margin"
+                android:id="@+id/service_restart_btn_layout"
+                android:visibility="gone">
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dialog_button_height"
+                    android:text="@string/auto_update_hint_cancel"
+                    android:id="@+id/auto_cancel_btn"
+                    android:textColor="@color/buttonGrey"
+                    android:layout_marginRight="@dimen/dialog_button_margin_half" />
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dialog_button_height"
+                    android:text="@string/auto_update_hint_restart"
+                    android:textColor="@color/primaryColor"
+                    android:layout_marginLeft="@dimen/dialog_button_margin_half"
+                    android:id="@+id/auto_restart_btn" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

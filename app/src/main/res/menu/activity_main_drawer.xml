@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_category_all"
+            android:icon="@drawable/ic_category_all"
+            android:title="@string/title_section1" />
+        <item
+            android:id="@+id/nav_category_fav"
+            android:icon="@drawable/ic_category_favourite"
+            android:title="@string/title_section3" />
+        <!--<item-->
+            <!--android:id="@+id/nav_category_new"-->
+            <!--android:icon="@drawable/ic_category_new"-->
+            <!--android:title="@string/title_section4" />-->
+        <item
+            android:id="@+id/nav_category_subscriptions"
+            android:icon="@drawable/ic_category_subscriptions"
+            android:title="@string/title_section23" />
+    </group>
+
+    <group android:checkableBehavior="single">
+
+        <item android:title="Categories">
+            <menu>
+                <item
+                    android:checkable="true"
+                    android:id="@+id/nav_category_landscape"
+                    android:title="@string/title_section5" />
+                <item
+                    android:checkable="true"
+                    android:id="@+id/nav_category_buildings"
+                    android:title="@string/title_section6" />
+                <item
+                    android:checkable="true"
+                    android:id="@+id/nav_category_castles"
+                    android:title="@string/title_section7" />
+                <item
+                    android:checkable="true"
+                    android:id="@+id/nav_category_sea"
+                    android:title="@string/title_section8" />
+                <item
+                    android:checkable="true"
+                    android:id="@+id/nav_category_textures"
+                    android:title="@string/title_section9" />
+                <item
+                    android:checkable="true"
+                    android:id="@+id/nav_category_flowers"
+                    android:title="@string/title_section10" />
+                <item
+                    android:checkable="true"
+                    android:id="@+id/nav_category_other"
+                    android:title="@string/title_section22" />
+            </menu>
+        </item>
+
+    </group>
+
+</menu>

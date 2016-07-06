@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <ooo.oxo.library.widget.TouchImageView
+        android:id="@+id/scaling_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionName="transition_image"
+        android:layout_centerInParent="true" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/nav_bar_indent"
+        android:layout_alignParentRight="true">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical"
+            android:background="@color/colorBlackTransparent"
+            android:padding="8dp">
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="High quality"
+                android:id="@+id/switch1"
+                android:textColor="@android:color/white"
+                android:theme="@style/AppTheme"
+                android:checked="false"
+                android:switchPadding="8dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar2"
+        android:layout_centerInParent="true"
+        android:theme="@style/AppTheme"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

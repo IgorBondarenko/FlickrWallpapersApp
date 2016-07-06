@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activity.PreviewActivity"
+    tools:showIn="@layout/activity_preview">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/buttons_panel"
+            android:orientation="horizontal"
+            android:background="@color/primaryColorDark"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:gravity="bottom">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/preview_set_as_btn"
+                android:textColor="#e8eaf6"
+                android:id="@+id/set_as_btn"
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:layout_weight="2.5"
+                android:clickable="true"
+                android:background="@drawable/abc_item_background_holo_dark"
+                android:textSize="@dimen/set_as_text_size"/>
+            <!--android:background="@drawable/abc_ab_bottom_transparent_dark_holo" -->
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_download"
+                android:background="@drawable/abc_item_background_holo_dark"
+                android:text="@string/preview_save_btn"
+                android:textColor="#e8eaf6"
+                android:id="@+id/save_btn"
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:layout_weight="3"/>
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_not_important"
+                android:background="@drawable/abc_item_background_holo_dark"
+                android:id="@+id/favourite_btn"
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:layout_weight="3"/>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2.8"/>
+        </LinearLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/additional_inform_layout"
+            android:layout_marginBottom="@dimen/ad_margin_bottom">
+
+            <!-- NEW-->
+            <!--android:layout_height="@dimen/advertising_height"-->
+
+            <android.support.v4.view.ViewPager
+
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="298dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </LinearLayout>
+
+        <me.kaede.tagview.TagView
+            android:id="@+id/tagview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:lineMargin="8dp"
+            app:tagMargin="4dp"
+            app:textPaddingBottom="8dp"
+            app:textPaddingLeft="16dp"
+            app:textPaddingRight="16dp"
+            app:textPaddingTop="8dp">
+        </me.kaede.tagview.TagView>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/preview_ad_stub"
+            android:visibility="visible">
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

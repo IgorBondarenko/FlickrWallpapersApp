@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.beautiful_wallpapers_hd_qhd.activity.AuthorPageActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="216dp"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:background="@android:color/white"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <LinearLayout
+                android:id="@+id/circular_reveal_background"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="216dp"
+                android:background="@color/colorPrimary"
+                android:visibility="invisible"
+                android:fitsSystemWindows="true"
+                android:elevation="8dp">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_alignParentRight="true"
+                android:elevation="8dp">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="SUBSCRIBE"
+                    android:id="@+id/author_subscribe_btn"
+                    android:background="@drawable/rounded_button"
+                    android:textColor="@android:color/white"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="UNSUBSCRIBE"
+                    android:id="@+id/author_unsubscribe_btn"
+                    android:background="@drawable/rounded_color_button"
+                    android:textColor="@android:color/white"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:layout_marginLeft="8dp" />
+            </LinearLayout>
+
+            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/contact"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="50dp"
+        android:transitionName="transition_author_image"
+
+        app:layout_behavior="com.zoonref.SimpleViewBehavior"
+        app:dependsOn="@+id/app_bar"
+        app:dependType="y"
+        app:dependTargetY="-100dp"
+        app:animation="@anim/zoom_out"
+
+        app:civ_border_width="2dp"
+        app:civ_border_color="@android:color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="10dp"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="140dp"
+        android:gravity="center"
+        android:text="Name Surname\n[nickname]"
+        android:textColor="@android:color/white"
+
+        app:layout_behavior="com.zoonref.SimpleViewBehavior"
+        app:dependsOn="@+id/app_bar"
+        app:dependType="y"
+        app:dependTargetY="-116dp"
+        app:targetX="48dp"
+        app:targetY="0dp"
+        android:id="@+id/profile_name" />
+
+    <com.etsy.android.grid.StaggeredGridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/author_images_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:item_margin="8dp"
+        app:column_count="@integer/columns"
+        android:scrollingCache="true"
+        android:smoothScrollbar="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+</android.support.design.widget.CoordinatorLayout>

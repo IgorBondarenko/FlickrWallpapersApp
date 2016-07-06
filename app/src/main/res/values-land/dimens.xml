@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_margin_horizontal">56dp</dimen>
+    <dimen name="dialog_card_margin_horizontal">56dp</dimen>
+    <dimen name="dialog_card_margin_vertical">16dp</dimen>
+</resources>
