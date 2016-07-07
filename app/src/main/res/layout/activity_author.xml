@@ -124,7 +124,7 @@
         android:id="@+id/author_images_grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:item_margin="4dp"
+        android:padding="4dp"
         app:column_count="@integer/columns"
         android:scrollingCache="true"
         android:smoothScrollbar="true"

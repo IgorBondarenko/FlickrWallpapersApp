@@ -14,6 +14,8 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.beautiful_wallpapers_hd_qhd.R;
+import com.beautiful_wallpapers_hd_qhd.core.Advertising;
+import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesController;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDataBaseHelper;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
@@ -42,6 +44,7 @@ public class ScalingImageActivity extends Activity implements CompoundButton.OnC
     @BindView(R.id.switch1) Switch mSwitch;
     private View mDecorView;
 
+    @Inject SharedPreferencesController sPref;
     @Inject FlickrDatabase flickrDB;
     private String mFlickrImageId;
 
@@ -65,6 +68,14 @@ public class ScalingImageActivity extends Activity implements CompoundButton.OnC
             mDecorView = getWindow().getDecorView();
             mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE);
             buttonsPanelTouchDetector(mImageView);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(!sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false)){
+            new Advertising(this).loadFullScreenAd(Advertising.FULL_SCREEN_ACTIVITY_AD_ID);
         }
     }
 

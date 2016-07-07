@@ -7,6 +7,7 @@ import android.webkit.WebView;
 
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.core.Advertising;
+import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesController;
 import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
 import com.google.android.gms.ads.AdView;
 
@@ -27,7 +28,8 @@ public class AuthorWebProfileActivity extends AppCompatActivity {
         WebView browser = (WebView)findViewById(R.id.browser);
         browser.loadUrl(FlickrHelper.FLICKR_USER_HP + getIntent().getStringExtra("author_nsid"));
 
-        boolean IS_PRO = false;
-        new Advertising(this, IS_PRO).loadSmartBanner((AdView) findViewById(R.id.author_profile_ad_view));
+        if(!new SharedPreferencesController(this).getBool(SharedPreferencesController.SP_PRO_VERSION, false)){
+            new Advertising(this).loadSmartBanner((AdView) findViewById(R.id.author_profile_ad_view));
+        }
     }
 }

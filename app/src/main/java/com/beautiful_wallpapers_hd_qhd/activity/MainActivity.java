@@ -23,11 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.activity.dialog.ExitDialog;
+import com.beautiful_wallpapers_hd_qhd.core.Advertising;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.AuthorAdapter;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.ImageRecyclerAdapter;
 import com.beautiful_wallpapers_hd_qhd.core.billing.InAppConfig;
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     private static int mCurrentSelectedPosition = R.id.nav_category_all;
     private static int mTitle = 0;
     private static String mCategory = "all";
+    private boolean isProActivated = false;
 
     private List<String> mCurrentFlickrImages = new ArrayList<>();
     private List<String> flickrImageIds = new ArrayList<>();
@@ -78,6 +81,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.authors_grid_view) GridView mGridViewAuthors;
     @BindView(R.id.progressBar) ProgressBar mProgressBar;
     private ImageRecyclerAdapter mImageAdapter;
+    private String mAccountEmail;
 
     @Inject AnimationController animationController;
     @Inject SharedPreferencesController sPref;
@@ -118,6 +122,16 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().findItem(mCurrentSelectedPosition).setChecked(true);
             onNavigationItemSelected(navigationView.getMenu().findItem(mCurrentSelectedPosition));
         }
+
+        if(!(isProActivated = sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false))){
+            new Advertising(this, Advertising.MAIN_ACTIVITY_BANNER_AD_ID).loadSmartBanner(R.id.main_ad_view);
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -129,8 +143,6 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(new Intent(getString(R.string.exit_app_dialog)), REQUEST_CODE_EXIT);
         }
     }
-
-    private String mAccountEmail;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -176,8 +188,10 @@ public class MainActivity extends AppCompatActivity
                 return;
             }
             Purchase premiumPurchase = inventory.getPurchase(InAppConfig.SKU_PRO_VERSION);
-            if(!sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false)){
-                sPref.setBool(SharedPreferencesController.SP_PRO_VERSION, (premiumPurchase != null && premiumPurchase.getDeveloperPayload().equals(mAccountEmail)));
+
+            if(premiumPurchase != null && premiumPurchase.getDeveloperPayload().equals(mAccountEmail)){
+                sPref.setBool(SharedPreferencesController.SP_PRO_VERSION, true);
+                showToast(getString(R.string.restart_app));
             } else {
                 showToast("You haven't bought PRO-version");
             }
@@ -188,6 +202,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        if(isProActivated){
+            menu.findItem(R.id.action_restore_purchase).setVisible(false);
+        }
         return true;
     }
 

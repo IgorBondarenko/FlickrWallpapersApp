@@ -14,9 +14,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.*;
 
 import com.beautiful_wallpapers_hd_qhd.R;
+import com.beautiful_wallpapers_hd_qhd.core.Advertising;
 import com.beautiful_wallpapers_hd_qhd.core.Device;
 import com.beautiful_wallpapers_hd_qhd.core.WallpaperInstaller;
 import com.beautiful_wallpapers_hd_qhd.core.WallpapersApplication;
+import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesController;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDataBaseHelper;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
@@ -187,11 +189,11 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
     public void OnClickFAB(View v){
         if(!setWallpaperThread.isAlive()){
 
-//                    // TODO: 21.04.2016 Ad
-            //if(!getSharedPreferences(null, MODE_PRIVATE).getBoolean("pro", false)){test_new Advertising(this, Advertising.CROP_IMAGE_ACTIVITY_AD_ID).loadFullScreenAd();}
-
-            //String u = URL.substring(0, URL.length() - 5);
+            if(!(new SharedPreferencesController(getBaseContext()).getBool(SharedPreferencesController.SP_PRO_VERSION, false))){
+                new Advertising(getBaseContext()).loadFullScreenAd(Advertising.CROP_IMAGE_ACTIVITY_AD_ID);
+            }
             //analytics.registerEvent("CropImage", Analytics.BUTTON_PRESSED, "install wallpaper "+dao.getStringValueByURL(u, "category") + "_category_id-" +  dao.getIntegerValueByURL(u, "cat_index"), 0);
+
             initWallpaperInstaller();
             Animation anim = AnimationUtils.loadAnimation(getApplication(), R.anim.zoom_btn);
             anim.setAnimationListener(new Animation.AnimationListener() {

@@ -40,8 +40,10 @@ import android.widget.Toast;
 
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.activity.dialog.InformationCardDialog;
+import com.beautiful_wallpapers_hd_qhd.core.Advertising;
 import com.beautiful_wallpapers_hd_qhd.core.Device;
 import com.beautiful_wallpapers_hd_qhd.core.controller.AnimationController;
+import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesController;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDataBaseHelper;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
@@ -57,6 +59,7 @@ import com.beautiful_wallpapers_hd_qhd.core.retrofit.enteties.UserIcon;
 import com.beautiful_wallpapers_hd_qhd.core.view.ResizablePortraitImageView;
 import com.beautiful_wallpapers_hd_qhd.core.view.helper.ListViewHelper;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -81,9 +84,12 @@ public class PreviewActivity extends AppCompatActivity {
     private ImageLoader mImageLoader = ImageLoader.getInstance();
 
     private boolean isFavouriteImage = false;
+    private boolean isProVersion = false;
     private String previewImageUrl;
 
     @Inject AnimationController mAnimationController;
+    @Inject SharedPreferencesController sPref;
+    @Inject Advertising mAdvertising;
     @Inject static FlickrAPI flickrAPI;
     @Inject static FlickrDatabase flickrDB;
     @Inject static Device mDevice;
@@ -146,18 +152,18 @@ public class PreviewActivity extends AppCompatActivity {
         loadButtonsPanel();
         loadTags();
 
-        //todo AD
-        //boolean IS_PRO = false;
-        //test_new Advertising(this, IS_PRO).loadSmartBanner((AdView) findViewById(R.id.preview_ad_view));
-
-        LinearLayout adStub = (LinearLayout)findViewById(R.id.preview_ad_stub);
-        AdSize smartBanner = AdSize.SMART_BANNER;
-        adStub.setMinimumHeight(smartBanner.getHeightInPixels(this));
+        if(!(isProVersion = sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false))){
+            LinearLayout adStub = (LinearLayout)findViewById(R.id.preview_ad_stub);
+            AdSize smartBanner = AdSize.SMART_BANNER;
+            adStub.setMinimumHeight(smartBanner.getHeightInPixels(this));
+            //mAdvertising.loadSmartBanner((AdView) findViewById(R.id.preview_ad_view));
+            mAdvertising.loadSmartBanner(R.id.preview_ad_view);
+        }
 
         mScaleFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent scalingImageIntent = new Intent("com.beautiful_wallpapers_hd_qhd.SCALING_IMAGE_ACTIVITY");
+                Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
                 scalingImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
                 mAnimationController.transition(mImageView, "transition_image", scalingImageIntent);
             }
@@ -223,7 +229,7 @@ public class PreviewActivity extends AppCompatActivity {
                 mImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent scalingImageIntent = new Intent("com.beautiful_wallpapers_hd_qhd.SCALING_IMAGE_ACTIVITY");
+                        Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
                         scalingImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
                         mAnimationController.transition(mImageView, "transition_image", scalingImageIntent);
                     }
@@ -281,6 +287,9 @@ public class PreviewActivity extends AppCompatActivity {
                         break;
                     case R.id.save_btn:
                         downloadImage();
+                        if(!isProVersion){
+                            mAdvertising.loadFullScreenAd(Advertising.SAVE_ACTIVITY_AD_ID);
+                        }
                         //analytics.registerEvent("Preview", Analytics.BUTTON_PRESSED, "save", 0);
                         break;
                     case R.id.favourite_btn:
@@ -502,7 +511,7 @@ public class PreviewActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     CardView card = (CardView) rootView.findViewById(R.id.information_card);
-                    Intent dialog = new Intent("com.beautiful_wallpapers_hd_qhd.DIALOG_CARD_INFORMATION");
+                    Intent dialog = new Intent(getString(R.string.card_information_dialog));
                     dialog.putExtra("inform_num", informNum);
                     switch (informNum){
                         case InformationCardDialog.AUTHOR_INFORMATION:

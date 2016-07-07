@@ -65,7 +65,7 @@
             android:name=".activity.dialog.InformationCardDialog"
             android:theme="@style/CardDialog">
             <intent-filter>
-                <action android:name="com.beautiful_wallpapers_hd_qhd.DIALOG_CARD_INFORMATION" />
+                <action android:name="com.beautiful_wallpapers_hd_qhd.CARD_INFORMATION_DIALOG" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -143,6 +143,16 @@
         <!--services-->
         <service android:name=".core.service.UpdateWallpapersService"
             android:enabled="true"/>
+
+        <!--admob-->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
 
     </application>
 

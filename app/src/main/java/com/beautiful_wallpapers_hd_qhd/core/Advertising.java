@@ -1,15 +1,15 @@
 package com.beautiful_wallpapers_hd_qhd.core;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.beautiful_wallpapers_hd_qhd.*;
-import com.google.android.gms.ads.*;
-import com.google.android.gms.ads.internal.request.StringParcel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 /**
  * Created by Igor on 24.01.2015.
@@ -28,27 +28,24 @@ public class Advertising {
     private Context mContext;
     private String mAdId;
     private AdRequest adRequest;
-    private boolean mIsPro = false;
 
-    public Advertising(Context context, String adId, boolean isPro) {
+    public Advertising(Context context, String adId) {
         this.mContext = context;
         this.mAdId = adId;
         this.adRequest = TEST_MODE ? new AdRequest.Builder().addTestDevice(TEST_DEVICE_ID).build() : new AdRequest.Builder().build();
-        this.mIsPro = isPro;
     }
 
-    public Advertising(Context context, boolean isPro){
+    public Advertising(Context context){
         this.mContext = context;
         this.adRequest = TEST_MODE ? new AdRequest.Builder().addTestDevice(TEST_DEVICE_ID).build() : new AdRequest.Builder().build();
-        this.mIsPro = isPro;
     }
 
     public void loadSmartBanner(AdView adView){
-        if(mIsPro){
-            adView.setVisibility(View.GONE);
-        } else {
-            adView.loadAd(adRequest);
-        }
+        adView.loadAd(adRequest);
+    }
+
+    public void loadSmartBanner(int resId){
+        ((AdView)((Activity) mContext).findViewById(resId)).loadAd(adRequest);
     }
 
     public void loadFullScreenAd(String adId){
@@ -77,25 +74,14 @@ public class Advertising {
         });
     }
 
-    public void loadBanner(LinearLayout ad_layout, final Analytics analytics, boolean inCard){
-        Resources resources = mContext.getResources();
-        //int width = resources.getInteger(R.integer.ad_width);
+    public void loadBanner(LinearLayout ad_layout){
         final AdView mAdView = new AdView(mContext);
-        //int width = inCard ? resources.getInteger(R.integer.ad_width) : AdSize.SMART_BANNER.getWidth();
-        //mAdView.setAdSize(test_new AdSize(width, 50));
-
         mAdView.setAdSize(AdSize.SMART_BANNER);
 
         mAdView.setAdUnitId(mAdId);
         mAdView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         ad_layout.addView(mAdView);
         mAdView.loadAd(adRequest);
-        mAdView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                analytics.registerEvent("Preview", Analytics.SMALL_ADVERTISING_PRESSED, null, 0);
-            }
-        });
     }
 
     /*

@@ -151,9 +151,11 @@
     <!-- activity-->
     <string name="author_page_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTHOR_PAGE_ACTIVITY</string>
     <string name="author_web_profile_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTHOR_WEB_PROFILE_ACTIVITY</string>
+    <string name="scaling_image_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.SCALING_IMAGE_ACTIVITY</string>
     <string name="auto_update_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTO_UPDATE_DIALOG</string>
     <string name="exit_app_dialog" translatable="false">com.beautiful_wallpapers_hd_qhd.EXIT_DIALOG</string>
     <string name="buy_pro_dialog" translatable="false">com.beautiful_wallpapers_hd_qhd.BUY_PRO_DIALOG</string>
+    <string name="card_information_dialog" translatable="false">com.beautiful_wallpapers_hd_qhd.CARD_INFORMATION_DIALOG</string>
 
     <string name="main_activity" translatable="false">com.wallpapers_hd_qhd.MAIN_ACTIVITY</string>
     <string name="preview_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.PREVIEW_ACTIVITY</string>
@@ -182,6 +184,9 @@
 
     <string name="title_activity_main" translatable="false">MainActivity</string>
     <string name="title_activity_scrolling" translatable="false">ScrollingActivity</string>
+
+    <string name="main_activity_banner" translatable="false">ca-app-pub-8347960194719275/1381303942</string>
+    <string name="preview_activity_banner" translatable="false">ca-app-pub-8347960194719275/4990163542</string>
 
 
     <string name="image_view_holder" translatable="false">adapter1</string>

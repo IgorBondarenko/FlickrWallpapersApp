@@ -7,6 +7,7 @@ package com.beautiful_wallpapers_hd_qhd.core.di;
 import android.content.Context;
 import android.util.DisplayMetrics;
 
+import com.beautiful_wallpapers_hd_qhd.core.Advertising;
 import com.beautiful_wallpapers_hd_qhd.core.Device;
 import com.beautiful_wallpapers_hd_qhd.core.billing.InAppConfig;
 import com.beautiful_wallpapers_hd_qhd.core.controller.AnimationController;
@@ -82,5 +83,10 @@ public class MyModule {
                 .setVerifyMode(OpenIabHelper.Options.VERIFY_EVERYTHING)
                 .addStoreKeys(InAppConfig.STORE_KEYS_MAP);
         return new OpenIabHelper(mContext, builder.build());
+    }
+
+    @Provides
+    public Advertising provideAdvertising(){
+        return new Advertising(mContext);
     }
 }

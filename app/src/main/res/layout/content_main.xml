@@ -43,11 +43,16 @@
         android:indeterminate="true"
         android:layout_centerInParent="true" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_ad_view"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/main_ad_layout"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+
+        ads:adUnitId="ca-app-pub-8347960194719275/1381303942"
+        ads:adSize="SMART_BANNER">
+    </com.google.android.gms.ads.AdView>
 
 </RelativeLayout>

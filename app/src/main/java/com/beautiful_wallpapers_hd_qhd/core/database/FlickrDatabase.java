@@ -32,15 +32,12 @@ public class FlickrDatabase {
         cv.put(FlickrDataBaseHelper.TABLE_PHOTO_FLICKR_ID, flickrId);
         switch (table){
             case FlickrDataBaseHelper.TABLE_THUMB_SIZE:
-                System.out.println("DATABSE ADD THUMB");
                 cv.put(FlickrDataBaseHelper.TABLE_PHOTO_THUMB_URL, value);
                 break;
             case FlickrDataBaseHelper.TABLE_PREVIEW_SIZE:
-                System.out.println("DATABSE ADD PREVIEW");
                 cv.put(FlickrDataBaseHelper.TABLE_PHOTO_PREVIEW_URL, value);
                 break;
             case FlickrDataBaseHelper.TABLE_ORIGINAL_SIZE:
-                System.out.println("DATABSE ADD ORIGINAL");
                 cv.put(FlickrDataBaseHelper.TABLE_PHOTO_ORIGINAL_URL, value);
                 break;
         }
@@ -101,7 +98,6 @@ public class FlickrDatabase {
     }
 
     public boolean isFavourite(String flickrId, int favouriteType){
-        System.out.println("DATABSE is fav "+flickrId+" "+favouriteType);
         Cursor c = null;
         try {
             switch (favouriteType){
@@ -149,7 +145,6 @@ public class FlickrDatabase {
     }
 
     public void removeFavourite(String flickrId, int favouriteType){
-        System.out.println("DATABSE remove fav "+flickrId+" "+favouriteType);
         switch (favouriteType){
             case FAVOURITE_PHOTO:
                 dataBase.delete(FlickrDataBaseHelper.TABLE_FAVOURITE_PHOTOS, FlickrDataBaseHelper.TABLE_PHOTO_FLICKR_ID + " = ?", new String[]{flickrId});
@@ -161,7 +156,6 @@ public class FlickrDatabase {
     }
 
     public void addAuthor(Author author){
-        System.out.println("DATABSE add Author");
         ContentValues cv = new ContentValues();
         cv.put(FlickrDataBaseHelper.TABLE_AUTHOR_NSID, author.getNsid());
         cv.put(FlickrDataBaseHelper.TABLE_AUTHOR_REALNAME, author.getRealName());
