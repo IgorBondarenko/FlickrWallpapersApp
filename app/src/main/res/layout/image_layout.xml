@@ -12,7 +12,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/small_img"
             android:transitionName="transition_image"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+        android:layout_margin="4dp" />
 
     <!--android:layout_alignEnd="@+id/small_img"-->
     <!--android:layout_marginRight="5dp"-->

@@ -4,7 +4,6 @@ import android.accounts.AccountManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.activity.dialog.ExitDialog;
-import com.beautiful_wallpapers_hd_qhd.core.Device;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.AuthorAdapter;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.ImageRecyclerAdapter;
 import com.beautiful_wallpapers_hd_qhd.core.billing.InAppConfig;
@@ -82,10 +80,10 @@ public class MainActivity extends AppCompatActivity
     private ImageRecyclerAdapter mImageAdapter;
 
     @Inject AnimationController animationController;
-    @Inject FlickrAPI flickrAPI;
-    @Inject FlickrDatabase flickrDB;
     @Inject SharedPreferencesController sPref;
+    @Inject FlickrDatabase flickrDB;
     @Inject OpenIabHelper mHelper;
+    @Inject FlickrAPI flickrAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,11 +109,7 @@ public class MainActivity extends AppCompatActivity
         String tag = getIntent().getStringExtra("tag");
         if(tag != null){
             initImageAdapter(flickrImageIds, "tagSearch");
-
-            //// TODO: 02.07.2016 new
-            //search(FlickrHelper.ARG_TEXT, tag);
             updateAdapter(flickrAPI.getPhotosInGroupByTags(FlickrHelper.METHOD_SEARCH, tag));
-
             setTitle("#"+tag);
         } else {
             if(mTitle != 0){
@@ -153,7 +147,7 @@ public class MainActivity extends AppCompatActivity
             case REQUEST_CODE_PICK_ACCOUNT:
                 if (resultCode == RESULT_OK) {
                     mAccountEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                    //initializePurchases();
+                    initializePurchases();
                 } else if (resultCode == RESULT_CANCELED) {
                     Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show();
                 }
@@ -161,7 +155,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void initializePurchases(){
+    private void initializePurchases(){
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
                 if (!result.isSuccess()) {
@@ -210,8 +204,6 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextSubmit(String query) {
                         initImageAdapter(flickrImageIds, "search");
-                        // TODO: 02.07.2016
-                        //search(FlickrHelper.ARG_TEXT, query);
                         updateAdapter(flickrAPI.getPhotosInGroupByText(FlickrHelper.METHOD_SEARCH, query));
                         return false;
                     }
@@ -269,11 +261,7 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()){
             case R.id.nav_category_all:
                 initImageAdapter(flickrImageIds, "all");
-
-                //// TODO: 02.07.2016 new
-                //updateFlickrImageAdapter();
                 updateAdapter(flickrAPI.getPhotosInGroup(FlickrHelper.METHOD_GET_PHOTOS_BY_GROUP));
-
                 saveCurrent(R.id.nav_category_all, R.string.title_section1);
                 break;
             case R.id.nav_category_fav:
@@ -305,52 +293,37 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_category_landscape:
                 initImageAdapter(flickrImageIds, "landscape");
-                // TODO: 02.07.2016
-//                search(FlickrHelper.ARG_TEXT, "WHD_landscape");
                 updateAdapter(flickrAPI.getPhotosInGroupByTags(FlickrHelper.METHOD_SEARCH, "WHD_landscape"));
-
                 saveCurrent(R.id.nav_category_landscape, R.string.title_section5);
                 break;
             case R.id.nav_category_buildings:
                 initImageAdapter(flickrImageIds, "building");
-//                search(FlickrHelper.ARG_TEXT, "WHD_building");
                 updateAdapter(flickrAPI.getPhotosInGroupByTags(FlickrHelper.METHOD_SEARCH, "WHD_building"));
-
                 saveCurrent(R.id.nav_category_buildings, R.string.title_section6);
                 break;
             case R.id.nav_category_castles:
                 initImageAdapter(flickrImageIds, "castle");
-//                search(FlickrHelper.ARG_TEXT, "WHD_castle");
                 updateAdapter(flickrAPI.getPhotosInGroupByTags(FlickrHelper.METHOD_SEARCH, "WHD_castle"));
-
                 saveCurrent(R.id.nav_category_castles, R.string.title_section7);
                 break;
             case R.id.nav_category_sea:
                 initImageAdapter(flickrImageIds, "sea");
-//                search(FlickrHelper.ARG_TEXT, "WHD_sea");
                 updateAdapter(flickrAPI.getPhotosInGroupByTags(FlickrHelper.METHOD_SEARCH, "WHD_sea"));
-
                 saveCurrent(R.id.nav_category_sea, R.string.title_section8);
                 break;
             case R.id.nav_category_textures:
                 initImageAdapter(flickrImageIds, "texture");
-//                search(FlickrHelper.ARG_TEXT, "WHD_texture");
                 updateAdapter(flickrAPI.getPhotosInGroupByTags(FlickrHelper.METHOD_SEARCH, "WHD_texture"));
-
                 saveCurrent(R.id.nav_category_textures, R.string.title_section9);
                 break;
             case R.id.nav_category_flowers:
                 initImageAdapter(flickrImageIds, "flower");
-//                search(FlickrHelper.ARG_TEXT, "WHD_flower");
                 updateAdapter(flickrAPI.getPhotosInGroupByTags(FlickrHelper.METHOD_SEARCH, "WHD_flower"));
-
                 saveCurrent(R.id.nav_category_flowers, R.string.title_section10);
                 break;
             case R.id.nav_category_other:
                 initImageAdapter(flickrImageIds, "other");
-//                search(FlickrHelper.ARG_TEXT, "WHD_other");
                 updateAdapter(flickrAPI.getPhotosInGroupByTags(FlickrHelper.METHOD_SEARCH, "WHD_other"));
-
                 saveCurrent(R.id.nav_category_other, R.string.title_section22);
                 break;
         }
@@ -368,26 +341,13 @@ public class MainActivity extends AppCompatActivity
 
     private void initImageAdapter(List<String> imagesId, String category){
         mCategory = category;
-        //mImageAdapter = new ImageAdapter(this, imagesId, category);
         mImageAdapter = new ImageRecyclerAdapter(this, imagesId, category);
 
         mProgressBar.setVisibility(View.VISIBLE);
         mGridViewAuthors.setVisibility(View.GONE);
         mGridViewImages.setVisibility(View.VISIBLE);
 
-        //mGridViewImages.setAdapter(mImageAdapter);
-
         mGridViewImages.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.columns), StaggeredGridLayoutManager.VERTICAL));
-        mGridViewImages.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                outRect.bottom = 8;
-                outRect.top = 8;
-                outRect.right = 8;
-                outRect.left = 8;
-            }
-        });
         mGridViewImages.setHasFixedSize(true);
         mGridViewImages.setAdapter(mImageAdapter);
     }

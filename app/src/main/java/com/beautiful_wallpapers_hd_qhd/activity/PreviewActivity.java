@@ -77,18 +77,19 @@ import retrofit2.Response;
 
 public class PreviewActivity extends AppCompatActivity {
 
-    private static final int MY_READ_EXTERNAL_STORAGE_PERMISSION = 10;
+    private static final int READ_EXTERNAL_STORAGE_PERMISSION = 10;
     private ImageLoader mImageLoader = ImageLoader.getInstance();
-    @Inject static FlickrAPI flickrAPI;
-    private boolean mFavouriteImage = false;
 
-    @Inject static FlickrDatabase flickrDB;
-    @Inject static Device mDevice;
-    private static Context mContext;
-    private static String mFlickrIamgeId;
+    private boolean isFavouriteImage = false;
+    private String previewImageUrl;
 
     @Inject AnimationController mAnimationController;
-    private String previewImageUrl;
+    @Inject static FlickrAPI flickrAPI;
+    @Inject static FlickrDatabase flickrDB;
+    @Inject static Device mDevice;
+
+    private static String mFlickrIamgeId;
+    private static Context mContext;
 
     @BindView(R.id.preview_iv) ResizablePortraitImageView mImageView;
     @BindView(R.id.buttons_panel) LinearLayout buttonsPanel;
@@ -127,14 +128,12 @@ public class PreviewActivity extends AppCompatActivity {
         } else {
 
             Call<PhotoSizes> call = flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mFlickrIamgeId);
-            Log.d("myTag", "req="+call.request().toString());
             call.enqueue(new Callback<PhotoSizes>() {
                 @Override
                 public void onResponse(Call<PhotoSizes> call, Response<PhotoSizes> response) {
                     String previewUrl = response.body().getSizes().getSizesArray().get(FlickrHelper.SIZE_LARGE).getSize();
                     setPreviewImageUrl(previewUrl);
                     loadPreviewImage(previewUrl);
-                    Log.d("myTag", "URL="+previewUrl);
                 }
 
                 @Override
@@ -142,21 +141,6 @@ public class PreviewActivity extends AppCompatActivity {
 
                 }
             });
-
-            /*
-            flickrHelper.processRequest(FlickrHelper.METHOD_GET_PHOTO_SIZES, FlickrHelper.ARG_GET_PHOTO_ID, mFlickrIamgeId, new RequestLoadListener() {
-                @Override
-                public void onLoad(byte[] responseBody) {
-                    String previewUrl = flickrHelper.getValue(responseBody, "sizes", "size", FlickrHelper.SIZE_LARGE, "source");
-                    setPreviewImageUrl(previewUrl);
-                    loadPreviewImage(previewUrl);
-                }
-
-                @Override
-                public void onFail(int statusCode, Throwable error) {
-
-                }
-            });*/
         }
 
         loadButtonsPanel();
@@ -168,7 +152,6 @@ public class PreviewActivity extends AppCompatActivity {
 
         LinearLayout adStub = (LinearLayout)findViewById(R.id.preview_ad_stub);
         AdSize smartBanner = AdSize.SMART_BANNER;
-        System.out.println("SIZE = "+smartBanner.getHeightInPixels(this));
         adStub.setMinimumHeight(smartBanner.getHeightInPixels(this));
 
         mScaleFAB.setOnClickListener(new View.OnClickListener() {
@@ -280,7 +263,7 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     private void loadButtonsPanel(){
-        mFavouriteImage = isFavourite(mFavouriteButton);
+        isFavouriteImage = isFavourite(mFavouriteButton);
 
         View.OnClickListener ocl = new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
@@ -301,7 +284,7 @@ public class PreviewActivity extends AppCompatActivity {
                         //analytics.registerEvent("Preview", Analytics.BUTTON_PRESSED, "save", 0);
                         break;
                     case R.id.favourite_btn:
-                        if(!mFavouriteImage){
+                        if(!isFavouriteImage){
                             Animation anim = AnimationUtils.loadAnimation(getApplication(), R.anim.zoom_star);
                             mFavouriteButton.setImageResource(R.drawable.ic_action_important);
                             mFavouriteButton.startAnimation(anim);
@@ -312,7 +295,7 @@ public class PreviewActivity extends AppCompatActivity {
                             flickrDB.removeFavourite(mFlickrIamgeId, FlickrDatabase.FAVOURITE_PHOTO);
                             Toast.makeText(getBaseContext(), R.string.preview_remove_from_favourite, Toast.LENGTH_LONG).show();
                         }
-                        mFavouriteImage = !mFavouriteImage;
+                        isFavouriteImage = !isFavouriteImage;
                         break;
                 }
             }
@@ -326,9 +309,9 @@ public class PreviewActivity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale((PreviewActivity)mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    ActivityCompat.requestPermissions((PreviewActivity)mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_READ_EXTERNAL_STORAGE_PERMISSION);
+                    ActivityCompat.requestPermissions((PreviewActivity)mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
                 } else {
-                    ActivityCompat.requestPermissions((PreviewActivity)mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_READ_EXTERNAL_STORAGE_PERMISSION);
+                    ActivityCompat.requestPermissions((PreviewActivity)mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
                 }
             } else {
                 mDevice.downloadImage(mContext, previewImageUrl, mFlickrIamgeId);
@@ -339,7 +322,7 @@ public class PreviewActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_READ_EXTERNAL_STORAGE_PERMISSION: {
+            case READ_EXTERNAL_STORAGE_PERMISSION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mDevice.downloadImage(mContext, previewImageUrl, mFlickrIamgeId);
                 } else {
@@ -414,15 +397,6 @@ public class PreviewActivity extends AppCompatActivity {
             final ListView listView = (ListView) rootView.findViewById(R.id.information_lw);
 
             final RelativeLayout viewMore = (RelativeLayout) rootView.findViewById(R.id.view_more_info);
-
-            /*
-            listView.setOnTouchListener(test_new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    return false;
-                }
-            });*/
 
             final ProgressBar informationLoadingPB = (ProgressBar)rootView.findViewById(R.id.information_loading_pb);
             final ListViewHelper listViewHelper = new ListViewHelper(getActivity());
@@ -504,10 +478,9 @@ public class PreviewActivity extends AppCompatActivity {
 
                                 viewMore.setOnClickListener(getOnClickListener(rootView, InformationCardDialog.IMAGE_INFORMATION, image));
                             } else {
-                                // TODO: 05.07.2016 NO INFORMATION 
+                                // TODO: 05.07.2016 NO INFORMATION STUB
                             }
 
-                            
                         }
 
                         @Override

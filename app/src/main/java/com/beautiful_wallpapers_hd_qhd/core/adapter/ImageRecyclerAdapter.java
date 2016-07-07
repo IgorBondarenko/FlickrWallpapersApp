@@ -59,8 +59,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
     }
 
-    private final FlickrHelper flickrHelper = new FlickrHelper();
-
     private static final SparseArray<Double> sPositionHeightRatios = new SparseArray<Double>();
     private static String mCategory;
 
@@ -75,10 +73,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
         this.mContext = context;
         this.mImageFlickrIds = mImageFlickrIds;
         mCategory = category;
-
         sPositionHeightRatios.clear();
-        //this.flickrDB = new FlickrDatabase(context);
-        //this.mAnimationController = new AnimationController(context);
         DaggerAppComponent.builder().myModule(new MyModule(mContext)).build().inject(this);
     }
 
@@ -95,7 +90,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
         if(url != null){
             loadImage(url, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
         } else {
-
             flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mImageFlickrIds.get(position)).enqueue(new Callback<PhotoSizes>() {
                 @Override
                 public void onResponse(Call<PhotoSizes> call, Response<PhotoSizes> response) {
@@ -109,21 +103,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
                 }
             });
-
-            /*
-            flickrHelper.processRequest(FlickrHelper.METHOD_GET_PHOTO_SIZES, FlickrHelper.ARG_GET_PHOTO_ID, mImageFlickrIds.get(position), new RequestLoadListener() {
-                @Override
-                public void onLoad(byte[] responseBody) {
-                    String thumbUrl = flickrHelper.getValue(responseBody, "sizes", "size", FlickrHelper.SIZE_THUMBNAIL, "source");
-                    flickrDB.addPhoto(mImageFlickrIds.get(position), FlickrDataBaseHelper.TABLE_THUMB_SIZE, thumbUrl);
-                    loadImage(thumbUrl, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
-                }
-
-                @Override
-                public void onFail(int statusCode, Throwable error) {
-
-                }
-            });*/
         }
 
         //holder.itemView.startAnimation(mAnimationController.getAnimation(R.anim.zoom_grid_elem));
