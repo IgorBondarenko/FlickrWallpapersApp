@@ -199,5 +199,7 @@
     <string name="buy_pro_advantages_text2">Added the ability to automatically change the wallpaper on schedule</string>
     <string name="restart_app">Please restart app</string>
     <string name="action_buy_pro">Buy PRO-vresion</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="action_try_again">Try again</string>
 
 </resources>

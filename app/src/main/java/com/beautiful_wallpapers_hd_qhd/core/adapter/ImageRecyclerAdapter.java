@@ -40,6 +40,9 @@ import javax.inject.Inject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Igor on 08.06.2016.
@@ -86,24 +89,21 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
     @Override
     public void onBindViewHolder(final ImageViewHolder holder, final int position) {
         holder.thumbnailImage.setHeightRatio(getPositionRatio(position));
-        String url = flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mImageFlickrIds.get(position));
-        if(url != null){
-            loadImage(url, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
-        } else {
-            flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mImageFlickrIds.get(position)).enqueue(new Callback<PhotoSizes>() {
-                @Override
-                public void onResponse(Call<PhotoSizes> call, Response<PhotoSizes> response) {
-                    String thumbUrl = response.body().getSizes().getSizesArray().get(FlickrHelper.SIZE_THUMBNAIL).getSize();
-                    flickrDB.addPhoto(mImageFlickrIds.get(position), FlickrDataBaseHelper.TABLE_THUMB_SIZE, thumbUrl);
-                    loadImage(thumbUrl, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
-                }
 
-                @Override
-                public void onFailure(Call<PhotoSizes> call, Throwable t) {
-
-                }
-            });
-        }
+        Observable.just(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mImageFlickrIds.get(position)))
+                .subscribe(url -> {
+                    if(url != null){
+                        loadImage(url, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
+                    } else {
+                        flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mImageFlickrIds.get(position))
+                                .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                                .map(photoSizes -> photoSizes.getSizes().getSizesArray().get(FlickrHelper.SIZE_THUMBNAIL).getSize())
+                                .subscribe(thumbUrl -> {
+                                    flickrDB.addPhoto(mImageFlickrIds.get(position), FlickrDataBaseHelper.TABLE_THUMB_SIZE, thumbUrl);
+                                    loadImage(thumbUrl, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
+                                });
+                    }
+                });
 
         //holder.itemView.startAnimation(mAnimationController.getAnimation(R.anim.zoom_grid_elem));
         touchEventsProcessing(holder.itemView, holder.favouriteImage, position);

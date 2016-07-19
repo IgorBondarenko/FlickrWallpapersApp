@@ -61,6 +61,9 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -124,7 +127,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if(!(isProActivated = sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false))){
-            new Advertising(this, Advertising.MAIN_ACTIVITY_BANNER_AD_ID).loadSmartBanner(R.id.main_ad_view);
+            new Advertising(this).loadSmartBanner(R.id.main_ad_view);
         }
 
     }
@@ -294,16 +297,13 @@ public class MainActivity extends AppCompatActivity
                 flickrAuthorIds = flickrDB.getFavourites(FlickrDatabase.FAVOURITE_AUTHOR);
                 AuthorAdapter mAuthorAdapter = new AuthorAdapter(this, flickrAuthorIds);
                 mGridViewAuthors.setAdapter(mAuthorAdapter);
-                mGridViewAuthors.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent authorPageIntent = new Intent(getResources().getString(R.string.author_page_activity));
-                        authorPageIntent.putExtra(getResources().getString(R.string.flickr_author_id), flickrAuthorIds.get(position));
-                        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
-                            animationController.transition(view.findViewById(R.id.sub_profile_image), "transition_author_image", authorPageIntent);
-                        } else {
-                            startActivity(authorPageIntent);
-                        }
+                mGridViewAuthors.setOnItemClickListener((parent, view, position, id) -> {
+                    Intent authorPageIntent = new Intent(getResources().getString(R.string.author_page_activity));
+                    authorPageIntent.putExtra(getResources().getString(R.string.flickr_author_id), flickrAuthorIds.get(position));
+                    if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+                        animationController.transition(view.findViewById(R.id.sub_profile_image), "transition_author_image", authorPageIntent);
+                    } else {
+                        startActivity(authorPageIntent);
                     }
                 });
                 saveCurrent(R.id.nav_category_subscriptions, R.string.title_section23);
@@ -369,31 +369,22 @@ public class MainActivity extends AppCompatActivity
         mGridViewImages.setAdapter(mImageAdapter);
     }
 
-    private void updateAdapter(Call<PhotosObject> call){
-        Log.d("myTag", "REQUEST="+call.request().toString());
+    private void updateAdapter(Observable<PhotosObject> observable){
         flickrImageIds.clear();
         mImageAdapter.notifyDataSetChanged();
-        call.enqueue(new Callback<PhotosObject>() {
-            @Override
-            public void onResponse(Call<PhotosObject> call, Response<PhotosObject> response) {
-                List<PhotosObject.PhotosArray.Photo> photos = response.body().getPhotos().getPhoto();
-                for (PhotosObject.PhotosArray.Photo photo : photos) {
-                    flickrImageIds.add(photo.getId());
-                    mProgressBar.setVisibility(View.GONE);
-                    mImageAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(final Call<PhotosObject> call, Throwable t) {
-                Snackbar.make(findViewById(android.R.id.content), "No internet connection.", Snackbar.LENGTH_INDEFINITE).setAction("Try again", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        updateAdapter(call);
-                    }
-                }).show();
-            }
-        });
+        observable
+                .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .doOnCompleted(() -> { mProgressBar.setVisibility(View.GONE); mImageAdapter.notifyDataSetChanged(); })
+                .map(photosObject -> photosObject.getPhotos().getPhoto())
+                .flatMap(photos -> Observable.from(photos))
+                .subscribe(
+                        photo -> flickrImageIds.add(photo.getId()),
+                        e -> {
+                            mProgressBar.setVisibility(View.GONE);
+                            Snackbar
+                                .make(findViewById(android.R.id.content), R.string.no_internet_connection, Snackbar.LENGTH_INDEFINITE)
+                                .setAction(R.string.action_try_again, v -> {mProgressBar.setVisibility(View.VISIBLE); updateAdapter(observable);}).show();}
+                );
     }
 
     private void showToast(String message){

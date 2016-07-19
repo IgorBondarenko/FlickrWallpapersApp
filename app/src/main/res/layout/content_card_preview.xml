@@ -76,31 +76,52 @@
             </LinearLayout>
 
             <!--button panel-->
-            <RelativeLayout
-                android:id="@+id/view_more_info"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:nestedScrollingEnabled="false">
+                android:layout_height="48dp">
 
-                <TextView
-                    android:gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/view_more"
-                    android:id="@+id/textView2"
-                    android:textStyle="bold"
-                    android:textColor="@color/abc_secondary_text_material_light" />
+                <RelativeLayout
+                    android:id="@+id/view_more_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:nestedScrollingEnabled="false">
 
-                <ImageView
+                    <TextView
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/view_more"
+                        android:id="@+id/textView2"
+                        android:textStyle="bold"
+                        android:textColor="@color/abc_secondary_text_material_light" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/imageView2"
+                        android:src="@drawable/ic_more_information"
+                        android:layout_alignParentRight="true" />
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/imageView2"
-                    android:src="@drawable/ic_more_information"
-                    android:layout_alignParentRight="true" />
-            </RelativeLayout>
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="48dp">
+                    <TextView
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="INFORMATION IS LOCKED"
+                        android:id="@+id/textView3"
+                        android:textStyle="bold"
+                        android:textColor="@color/abc_secondary_text_material_light" />
+                </RelativeLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 

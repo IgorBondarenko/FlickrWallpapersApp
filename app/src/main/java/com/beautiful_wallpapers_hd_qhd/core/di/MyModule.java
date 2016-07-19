@@ -22,6 +22,7 @@ import org.onepf.oms.OpenIabHelper;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
@@ -68,6 +69,7 @@ public class MyModule {
         return new Retrofit.Builder()
                 .baseUrl(FlickrHelper.RETRO_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build().create(FlickrAPI.class);
     }
 

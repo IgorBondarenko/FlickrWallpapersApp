@@ -53,7 +53,7 @@ public class FlickrHelper {
     public static final int SIZE_MEDIUM_640 = 6;
     public static final int SIZE_MEDIUM_800 = 7;
     public static final int SIZE_LARGE = 8;
-    public static final int SIZE_ORIGINAL = 9;
+    public static final int SIZE_ORIGINAL = 11;
 
     //exif
     public static final String EXIF_CAMERA = "Make";

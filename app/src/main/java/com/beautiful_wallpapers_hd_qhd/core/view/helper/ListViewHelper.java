@@ -36,45 +36,39 @@ public class ListViewHelper {
     }
 
     public AdapterView.OnItemClickListener getAuthorOnClickListener(final Author author){
-        return new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i) {
-                    case 1:
-                        Intent browser = new Intent(mContext.getResources().getString(R.string.author_web_profile_activity));
-                        browser.putExtra("author_nsid", author.getNsid());
-                        mContext.startActivity(browser);
-                        break;
-                    case 2:
-                        Intent authorPageIntent = new Intent(mContext.getResources().getString(R.string.author_page_activity));
-                        authorPageIntent.putExtra(mContext.getResources().getString(R.string.flickr_author_id), author.getNsid());
-                        mContext.startActivity(authorPageIntent);
-                        break;
-                    case 3:
-                        if (!author.getLocation().equals(NO_INFORMATION)) {
-                            openLink("geo:0,0?q=" + author.getLocation());
-                        }
-                        break;
-                    case 4:
-                        openLink(FlickrHelper.FLICKR_USER_SEND_MAIL + author.getNsid());
-                        break;
-                    case 5:
-                        if(author.getLicenseNumber() != 0){
-                            openLink(new License(author.getLicenseNumber()).getUrl());
-                        }
-                        break;
-                }
+        return (adapterView, view, i, l) -> {
+            switch (i) {
+                case 1:
+                    Intent browser = new Intent(mContext.getResources().getString(R.string.author_web_profile_activity));
+                    browser.putExtra("author_nsid", author.getNsid());
+                    mContext.startActivity(browser);
+                    break;
+                case 2:
+                    Intent authorPageIntent = new Intent(mContext.getResources().getString(R.string.author_page_activity));
+                    authorPageIntent.putExtra(mContext.getResources().getString(R.string.flickr_author_id), author.getNsid());
+                    mContext.startActivity(authorPageIntent);
+                    break;
+                case 3:
+                    if (!author.getLocation().equals(NO_INFORMATION)) {
+                        openLink("geo:0,0?q=" + author.getLocation());
+                    }
+                    break;
+                case 4:
+                    openLink(FlickrHelper.FLICKR_USER_SEND_MAIL + author.getNsid());
+                    break;
+                case 5:
+                    if(author.getLicenseNumber() != 0){
+                        openLink(new License(author.getLicenseNumber()).getUrl());
+                    }
+                    break;
             }
         };
     }
 
     public AdapterView.OnItemClickListener getImageOnItemClickListener(final FlickrImageEXIF image){
-        return new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(!image.getCamera().equals(NO_INFORMATION) && i == 0){
-                    openLink(GOOGLE_SEARCH_URL + image.getCamera());
-                }
+        return (adapterView, view, i, l) -> {
+            if(!image.getCamera().equals(NO_INFORMATION) && i == 0){
+                openLink(GOOGLE_SEARCH_URL + image.getCamera());
             }
         };
     }
@@ -88,23 +82,20 @@ public class ListViewHelper {
         String[] from = {"icon", "title", "value"};
         int[] to = { R.id.image_inform_iv, R.id.image_inform_title_tv, R.id.image_inform_tv};
         SimpleAdapter adapter = new SimpleAdapter(mContext, data, R.layout.image_information_layout, from, to);
-        adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Object data, String textRepresentation) {
-                switch (view.getId()){
-                    case R.id.image_inform_tv:
-                        ((TextView)view).setText(textRepresentation);
-                        if(textRepresentation.contains("http://")){
-                            ((TextView)view).setTextColor(Color.BLUE);
-                            ((TextView)view).setPaintFlags(((TextView)view).getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                        } else {
-                            ((TextView)view).setTextColor(Color.BLACK);
-                            ((TextView)view).setPaintFlags(Paint.ANTI_ALIAS_FLAG);
-                        }
-                        return true;
-                }
-                return false;
+        adapter.setViewBinder((view, data1, textRepresentation) -> {
+            switch (view.getId()){
+                case R.id.image_inform_tv:
+                    ((TextView)view).setText(textRepresentation);
+                    if(textRepresentation.contains("http://")){
+                        ((TextView)view).setTextColor(Color.BLUE);
+                        ((TextView)view).setPaintFlags(((TextView)view).getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    } else {
+                        ((TextView)view).setTextColor(Color.BLACK);
+                        ((TextView)view).setPaintFlags(Paint.ANTI_ALIAS_FLAG);
+                    }
+                    return true;
             }
+            return false;
         });
         listView.setAdapter(adapter);
     }
@@ -112,7 +103,7 @@ public class ListViewHelper {
     private void addData(int first, int last, int[] icons, String[] titles, CharSequence[] inform, ArrayList<Map<String, Object>> data){
         Map<String, Object> m;
         for (int i = first; i < last; i++) {
-            m = new HashMap<String, Object>();
+            m = new HashMap<>();
             m.put("icon", icons != null ? icons[i] : null);
             m.put("title", titles != null ? titles[i] : "");
             m.put("value", inform[i]);

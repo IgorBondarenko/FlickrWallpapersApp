@@ -20,6 +20,7 @@ public class FlickrImageEXIF implements Parcelable {
     private String whiteBalance;
     private String meteringMode;
     private String exposureMode;
+    private boolean isLocked = false;
 
     public FlickrImageEXIF(){
 
@@ -119,6 +120,14 @@ public class FlickrImageEXIF implements Parcelable {
 
     public void setExposureMode(String exposureMode) {
         this.exposureMode = exposureMode;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 
     @Override

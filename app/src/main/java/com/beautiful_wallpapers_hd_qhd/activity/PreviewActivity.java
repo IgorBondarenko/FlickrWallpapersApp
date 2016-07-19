@@ -77,6 +77,9 @@ import me.kaede.tagview.TagView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class PreviewActivity extends AppCompatActivity {
 
@@ -132,21 +135,10 @@ public class PreviewActivity extends AppCompatActivity {
         if(previewImageUrl != null){
             loadPreviewImage(previewImageUrl);
         } else {
-
-            Call<PhotoSizes> call = flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mFlickrIamgeId);
-            call.enqueue(new Callback<PhotoSizes>() {
-                @Override
-                public void onResponse(Call<PhotoSizes> call, Response<PhotoSizes> response) {
-                    String previewUrl = response.body().getSizes().getSizesArray().get(FlickrHelper.SIZE_LARGE).getSize();
-                    setPreviewImageUrl(previewUrl);
-                    loadPreviewImage(previewUrl);
-                }
-
-                @Override
-                public void onFailure(Call<PhotoSizes> call, Throwable t) {
-
-                }
-            });
+            flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mFlickrIamgeId)
+                    .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                    .map(photo -> photo.getSizes().getSizesArray().get(FlickrHelper.SIZE_LARGE).getSize())
+                    .subscribe(previewUrl -> {setPreviewImageUrl(previewUrl); loadPreviewImage(previewUrl);}, e -> {finish();});
         }
 
         loadButtonsPanel();
@@ -154,51 +146,36 @@ public class PreviewActivity extends AppCompatActivity {
 
         if(!(isProVersion = sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false))){
             LinearLayout adStub = (LinearLayout)findViewById(R.id.preview_ad_stub);
+            adStub.setVisibility(View.VISIBLE);
             AdSize smartBanner = AdSize.SMART_BANNER;
             adStub.setMinimumHeight(smartBanner.getHeightInPixels(this));
-            //mAdvertising.loadSmartBanner((AdView) findViewById(R.id.preview_ad_view));
             mAdvertising.loadSmartBanner(R.id.preview_ad_view);
         }
 
-        mScaleFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
-                scalingImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
-                mAnimationController.transition(mImageView, "transition_image", scalingImageIntent);
-            }
+        mScaleFAB.setOnClickListener(view -> {
+            Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
+            scalingImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
+            mAnimationController.transition(mImageView, "transition_image", scalingImageIntent);
         });
     }
 
     private void loadTags(){
-        flickrAPI.getPhotoInformation(FlickrHelper.METHOD_PHOTOS_GET_INFO, mFlickrIamgeId).enqueue(new Callback<PhotoInformation>() {
-            @Override
-            public void onResponse(Call<PhotoInformation> call, Response<PhotoInformation> response) {
-                TagView tagView = (TagView)findViewById(R.id.tagview);
-                List<PhotoInformation.Photo.Tags.Tag> tags = response.body().getPhoto().getTags();
-                if(tags != null){
-                    for (PhotoInformation.Photo.Tags.Tag tagText : tags) {
-                        Tag tag = new Tag("#"+tagText.getTag());
-                        tag.background = getResources().getDrawable(R.drawable.capsule_button);
-                        tagView.addTag(tag);
-                    }
-                }
 
-                tagView.setOnTagClickListener(new OnTagClickListener() {
-                    @Override
-                    public void onTagClick(Tag tag, int i) {
-                        Intent tagSearchIntent = new Intent(getBaseContext(), MainActivity.class);
-                        tagSearchIntent.putExtra("tag", tag.text.substring(1, tag.text.length()));
-                        startActivity(tagSearchIntent);
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Call<PhotoInformation> call, Throwable t) {
-                Log.d("myLog", "FAIL\n"+t.fillInStackTrace());
-            }
-        });
+        TagView tagView = (TagView)findViewById(R.id.tagview);
+        flickrAPI.getPhotoInformation(FlickrHelper.METHOD_PHOTOS_GET_INFO, mFlickrIamgeId)
+                .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .map(photoInformation -> photoInformation.getPhoto().getTags())
+                .filter(tags -> tags != null)
+                .flatMap(tags -> Observable.from(tags))
+                .subscribe(
+                        tagText -> {
+                            Tag tag = new Tag("#"+tagText.getTag());
+                            tag.background = getResources().getDrawable(R.drawable.capsule_button);
+                            tagView.addTag(tag);
+                            tagView.setOnTagClickListener((clickedTag, i) -> startActivity(new Intent(getBaseContext(), MainActivity.class).putExtra("tag", clickedTag.text.substring(1, clickedTag.text.length()))));
+                        },
+                        e -> Log.d("myLog", "FAIL\n"+e.fillInStackTrace())
+                );
     }
 
     private void setPreviewImageUrl(String url){
@@ -226,13 +203,10 @@ public class PreviewActivity extends AppCompatActivity {
             public void onLoadingComplete(String imageUri, final View view, Bitmap loadedImage) {
                 super.onLoadingComplete(imageUri, view, loadedImage);
 
-                mImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
-                        scalingImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
-                        mAnimationController.transition(mImageView, "transition_image", scalingImageIntent);
-                    }
+                mImageView.setOnClickListener(v -> {
+                    Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
+                    scalingImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
+                    mAnimationController.transition(mImageView, "transition_image", scalingImageIntent);
                 });
 
                 mProgressBar.startAnimation(mAnimationController.getAnimation(android.R.anim.slide_out_right, new AnimationController.BaseAnimationListener() {
@@ -271,42 +245,38 @@ public class PreviewActivity extends AppCompatActivity {
     private void loadButtonsPanel(){
         isFavouriteImage = isFavourite(mFavouriteButton);
 
-        View.OnClickListener ocl = new View.OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()){
-                    case R.id.set_as_btn:
-                        Intent cropImageIntent = new Intent(getResources().getString(R.string.crop_image_activity));
-                        cropImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
-                        Pair<View, String> p1 = Pair.create((View) mImageView, "transition_image");
-                        Pair<View, String> p2 = Pair.create((View) mScaleFAB, "transition_button");
-                        mAnimationController.transition(cropImageIntent, p1, p2);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-                        //analytics.registerEvent("Preview", Analytics.BUTTON_PRESSED, "set as", 0);
-                        break;
-                    case R.id.save_btn:
-                        downloadImage();
-                        if(!isProVersion){
-                            mAdvertising.loadFullScreenAd(Advertising.SAVE_ACTIVITY_AD_ID);
-                        }
-                        //analytics.registerEvent("Preview", Analytics.BUTTON_PRESSED, "save", 0);
-                        break;
-                    case R.id.favourite_btn:
-                        if(!isFavouriteImage){
-                            Animation anim = AnimationUtils.loadAnimation(getApplication(), R.anim.zoom_star);
-                            mFavouriteButton.setImageResource(R.drawable.ic_action_important);
-                            mFavouriteButton.startAnimation(anim);
-                            flickrDB.addFavourite(mFlickrIamgeId, FlickrDatabase.FAVOURITE_PHOTO);
-                            Toast.makeText(getBaseContext(), R.string.preview_add_to_favourite, Toast.LENGTH_LONG).show();
-                        } else {
-                            mFavouriteButton.setImageResource(R.drawable.ic_action_not_important);
-                            flickrDB.removeFavourite(mFlickrIamgeId, FlickrDatabase.FAVOURITE_PHOTO);
-                            Toast.makeText(getBaseContext(), R.string.preview_remove_from_favourite, Toast.LENGTH_LONG).show();
-                        }
-                        isFavouriteImage = !isFavouriteImage;
-                        break;
-                }
+        View.OnClickListener ocl = v -> {
+            switch (v.getId()){
+                case R.id.set_as_btn:
+                    Intent cropImageIntent = new Intent(getResources().getString(R.string.crop_image_activity));
+                    cropImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
+                    Pair<View, String> p1 = Pair.create((View) mImageView, "transition_image");
+                    Pair<View, String> p2 = Pair.create((View) mScaleFAB, "transition_button");
+                    mAnimationController.transition(cropImageIntent, p1, p2);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                    //analytics.registerEvent("Preview", Analytics.BUTTON_PRESSED, "set as", 0);
+                    break;
+                case R.id.save_btn:
+                    downloadImage();
+                    if(!isProVersion){
+                        mAdvertising.loadFullScreenAd(Advertising.SAVE_ACTIVITY_AD_ID);
+                    }
+                    //analytics.registerEvent("Preview", Analytics.BUTTON_PRESSED, "save", 0);
+                    break;
+                case R.id.favourite_btn:
+                    if(!isFavouriteImage){
+                        Animation anim = AnimationUtils.loadAnimation(getApplication(), R.anim.zoom_star);
+                        mFavouriteButton.setImageResource(R.drawable.ic_action_important);
+                        mFavouriteButton.startAnimation(anim);
+                        flickrDB.addFavourite(mFlickrIamgeId, FlickrDatabase.FAVOURITE_PHOTO);
+                        Toast.makeText(getBaseContext(), R.string.preview_add_to_favourite, Toast.LENGTH_LONG).show();
+                    } else {
+                        mFavouriteButton.setImageResource(R.drawable.ic_action_not_important);
+                        flickrDB.removeFavourite(mFlickrIamgeId, FlickrDatabase.FAVOURITE_PHOTO);
+                        Toast.makeText(getBaseContext(), R.string.preview_remove_from_favourite, Toast.LENGTH_LONG).show();
+                    }
+                    isFavouriteImage = !isFavouriteImage;
+                    break;
             }
         };
         mSetAsButton.setOnClickListener(ocl);
@@ -335,12 +305,9 @@ public class PreviewActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mDevice.downloadImage(mContext, previewImageUrl, mFlickrIamgeId);
                 } else {
-                    Snackbar.make(findViewById(android.R.id.content) ,getString(R.string.no_permission), Snackbar.LENGTH_LONG).setAction(getString(R.string.no_permission_try_again), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            downloadImage();
-                        }
-                    }).show();
+                    Snackbar
+                            .make(findViewById(android.R.id.content) ,getString(R.string.no_permission), Snackbar.LENGTH_LONG)
+                            .setAction(getString(R.string.no_permission_try_again), v -> {downloadImage();}).show();
                 }
             }
         }
@@ -413,90 +380,82 @@ public class PreviewActivity extends AppCompatActivity {
             switch (getArguments().getInt(ARG_SECTION_NUMBER)){
                 case 1:
                     textView.setText(R.string.preview_author_label);
-                    informationLoadingPB.setVisibility(View.GONE);
+                    flickrAPI.getPhotoInformation(FlickrHelper.METHOD_PHOTOS_GET_INFO, mFlickrIamgeId)
+                            .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                            .map(photoInformation -> photoInformation.getPhoto())
+                            .map(photo -> {
+                                final Author author = new Author();
+                                author.setNsid(photo.getOwner().getNsid());
+                                author.setRealName(photo.getOwner().getRealName());
+                                author.setUserName(photo.getOwner().getUserName());
+                                author.setLocation(photo.getOwner().getLocation());
+                                author.setLicenseNumber(Integer.parseInt(photo.getLicense()));
 
-                    flickrAPI.getPhotoInformation(FlickrHelper.METHOD_PHOTOS_GET_INFO, mFlickrIamgeId).enqueue(new Callback<PhotoInformation>() {
-                        @Override
-                        public void onResponse(Call<PhotoInformation> call, Response<PhotoInformation> response) {
-                            informationLoadingPB.setVisibility(View.GONE);
+                                flickrAPI.getAuthorIcon(FlickrHelper.METHOD_PEOPLE_GET_INFO, photo.getOwner().getNsid())
+                                        .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                                        .map(userIcon -> userIcon.getIcon())
+                                        .subscribe(icon -> {
+                                            String nsid = icon.getNsid(); String iconfarm = icon.getIconFarm(); String iconserver = icon.getIconServer();
+                                            if(flickrDB.getAuthor(nsid) == null){
+                                                author.setUserAvatar(Integer.valueOf(iconserver) == 0 ? null : FlickrHelper.getUserAvatar(iconfarm, iconserver, nsid));
+                                                flickrDB.addAuthor(author);
+                                            }
+                                        });
+                                return author;
+                            })
+                            .doOnCompleted(() -> informationLoadingPB.setVisibility(View.GONE))
+                            .subscribe(
+                                    author -> {
+                                        viewMore.setOnClickListener(getOnClickListener(rootView, InformationCardDialog.AUTHOR_INFORMATION, author));
+                                        listView.setOnItemClickListener(listViewHelper.getAuthorOnClickListener(author));
+                                        listViewHelper.setupAdapter(author.getIcons(), new String[]{}, author.toArray(), listView);
+                                    },
+                                    e -> Log.d("RX-JaVa", "ERROR: "+e.fillInStackTrace())
+                            );
 
-                            final Author author = new Author();
-                            author.setNsid(response.body().getPhoto().getOwner().getNsid());
-                            author.setRealName(response.body().getPhoto().getOwner().getRealName());
-                            author.setUserName(response.body().getPhoto().getOwner().getUserName());
-                            author.setLocation(response.body().getPhoto().getOwner().getLocation());
-                            author.setLicenseNumber(Integer.parseInt(response.body().getPhoto().getLicense()));
-
-                            viewMore.setOnClickListener(getOnClickListener(rootView, InformationCardDialog.AUTHOR_INFORMATION, author));
-
-                            flickrAPI.getAuthorIcon(FlickrHelper.METHOD_PEOPLE_GET_INFO, author.getNsid()).enqueue(new Callback<UserIcon>() {
-                                @Override
-                                public void onResponse(Call<UserIcon> call, Response<UserIcon> response) {
-                                    String nsid = response.body().getIcon().getNsid();
-                                    String iconfarm = response.body().getIcon().getIconFarm();
-                                    String iconserver = response.body().getIcon().getIconServer();
-
-                                    if(flickrDB.getAuthor(nsid) == null){
-                                        String userAvatar = Integer.valueOf(iconserver) == 0 ? null : FlickrHelper.getUserAvatar(iconfarm, iconserver, nsid);
-                                        author.setUserAvatar(userAvatar);
-                                        flickrDB.addAuthor(author);
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<UserIcon> call, Throwable t) {
-
-                                }
-                            });
-
-                            listView.setOnItemClickListener(listViewHelper.getAuthorOnClickListener(author));
-                            listViewHelper.setupAdapter(author.getIcons(), new String[]{}, author.toArray(), listView);
-                        }
-
-                        @Override
-                        public void onFailure(Call<PhotoInformation> call, Throwable t) {
-
-                        }
-                    });
                     break;
                 case 2:
                     textView.setText(R.string.preview_image_label);
+                    Observable.zip(
+                            flickrAPI.getImageEXIF(FlickrHelper.METHOD_GET_EXIF, mFlickrIamgeId)
+                                    .map(exif -> exif.getPhoto()),
+                            flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mFlickrIamgeId)
+                                    .map(sizes -> sizes.getSizes().getSizesArray().get(sizes.getSizes().getSizesArray().size() - 1).getResolution()),
+                            (image, resolution) -> {
+                                final FlickrImageEXIF imageData = new FlickrImageEXIF();
+                                if(image != null){
+                                    String camera = image.getExif(FlickrHelper.EXIF_CAMERA);
+                                    String cameraModel = image.getExif(FlickrHelper.EXIF_CAMERA_MODEL);
+                                    imageData.setCamera(camera != null ? cameraModel.contains(camera) ? cameraModel : camera + " " + cameraModel : NO_INFORMATION);
+                                    imageData.setAperture(compare(image.getExif(FlickrHelper.EXIF_APERTURE)));
+                                    imageData.setFocalLength(compare(image.getExif(FlickrHelper.EXIF_FOCAL_LENGTH)));
+                                    imageData.setISO(compare(image.getExif(FlickrHelper.EXIF_ISO)));
+                                    imageData.setExposureTime(compare(image.getExif(FlickrHelper.EXIF_EXPOSURE_TIME)));
+                                    imageData.setWhiteBalance(compare(image.getExif(FlickrHelper.EXIF_WHITE_BALANCE)));
+                                    imageData.setMeteringMode(compare(image.getExif(FlickrHelper.EXIF_METERING_MODE)));
+                                    imageData.setExposureMode(compare(image.getExif(FlickrHelper.EXIF_EXPOSURE_MODE)));
+                                } else {
+                                    imageData.setCamera(NO_INFORMATION);
+                                    imageData.setAperture(NO_INFORMATION);
+                                    imageData.setLocked(true);
+                                }
+                                imageData.setResolution(resolution);
 
-                    flickrAPI.getImageEXIF(FlickrHelper.METHOD_GET_EXIF, mFlickrIamgeId).enqueue(new Callback<ImageEXIF>() {
-                        @Override
-                        public void onResponse(Call<ImageEXIF> call, Response<ImageEXIF> response) {
-                            informationLoadingPB.setVisibility(View.GONE);
-
-                            final FlickrImageEXIF image = new FlickrImageEXIF();
-
-                            if(response.body().getPhoto() != null){
-                                String camera = response.body().getPhoto().getExif(FlickrHelper.EXIF_CAMERA);
-                                String cameraModel = response.body().getPhoto().getExif(FlickrHelper.EXIF_CAMERA_MODEL);
-                                image.setCamera(camera != null ? cameraModel.contains(camera) ? cameraModel : camera + " " + cameraModel : NO_INFORMATION);
-                                image.setResolution("1920x1080");
-                                image.setAperture(compare(response.body().getPhoto().getExif(FlickrHelper.EXIF_APERTURE)));
-                                image.setFocalLength(compare(response.body().getPhoto().getExif(FlickrHelper.EXIF_FOCAL_LENGTH)));
-                                image.setISO(compare(response.body().getPhoto().getExif(FlickrHelper.EXIF_ISO)));
-                                image.setExposureTime(compare(response.body().getPhoto().getExif(FlickrHelper.EXIF_EXPOSURE_TIME)));
-                                image.setWhiteBalance(compare(response.body().getPhoto().getExif(FlickrHelper.EXIF_WHITE_BALANCE)));
-                                image.setMeteringMode(compare(response.body().getPhoto().getExif(FlickrHelper.EXIF_METERING_MODE)));
-                                image.setExposureMode(compare(response.body().getPhoto().getExif(FlickrHelper.EXIF_EXPOSURE_MODE)));
-
-                                listView.setOnItemClickListener(listViewHelper.getImageOnItemClickListener(image));
-                                listViewHelper.setupAdapter(image.getIcons(), image.getEXIFTitles(mContext), image.toArray(), listView);
-
-                                viewMore.setOnClickListener(getOnClickListener(rootView, InformationCardDialog.IMAGE_INFORMATION, image));
-                            } else {
-                                // TODO: 05.07.2016 NO INFORMATION STUB
-                            }
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<ImageEXIF> call, Throwable t) {
-
-                        }
-                    });
+                                return imageData;
+                            })
+                                .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                                .doOnCompleted(() -> informationLoadingPB.setVisibility(View.GONE))
+                                .subscribe(
+                                        image -> {
+                                            if(!image.isLocked()){
+                                                listView.setOnItemClickListener(listViewHelper.getImageOnItemClickListener(image));
+                                                viewMore.setOnClickListener(getOnClickListener(rootView, InformationCardDialog.IMAGE_INFORMATION, image));
+                                            } else
+                                                viewMore.setVisibility(View.GONE);
+                                            listViewHelper.setupAdapter(image.getIcons(), image.getEXIFTitles(mContext), image.toArray(), listView);
+                                        },
+                                        e -> Log.d("RX-JaVa", "ERROR: "+e.fillInStackTrace())
+                                );
                     break;
             }
             return rootView;
@@ -507,22 +466,19 @@ public class PreviewActivity extends AppCompatActivity {
         }
 
         private View.OnClickListener getOnClickListener(final View rootView, final int informNum, final Object object){
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CardView card = (CardView) rootView.findViewById(R.id.information_card);
-                    Intent dialog = new Intent(getString(R.string.card_information_dialog));
-                    dialog.putExtra("inform_num", informNum);
-                    switch (informNum){
-                        case InformationCardDialog.AUTHOR_INFORMATION:
-                            dialog.putExtra("author_obj", (Author)object);
-                            break;
-                        case InformationCardDialog.IMAGE_INFORMATION:
-                            dialog.putExtra("image_obj", (FlickrImageEXIF)object);
-                            break;
-                    }
-                    new AnimationController(getContext()).transition(card, "transition_card", dialog);
+            return v -> {
+                CardView card = (CardView) rootView.findViewById(R.id.information_card);
+                Intent dialog = new Intent(getString(R.string.card_information_dialog));
+                dialog.putExtra("inform_num", informNum);
+                switch (informNum){
+                    case InformationCardDialog.AUTHOR_INFORMATION:
+                        dialog.putExtra("author_obj", (Author)object);
+                        break;
+                    case InformationCardDialog.IMAGE_INFORMATION:
+                        dialog.putExtra("image_obj", (FlickrImageEXIF)object);
+                        break;
                 }
+                new AnimationController(getContext()).transition(card, "transition_card", dialog);
             };
         }
     }

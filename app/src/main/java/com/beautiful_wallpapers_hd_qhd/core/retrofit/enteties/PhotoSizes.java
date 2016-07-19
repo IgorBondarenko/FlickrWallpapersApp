@@ -29,11 +29,18 @@ public class PhotoSizes {
 
             @SerializedName("source")
             private String size;
+            @SerializedName("width")
+            private String height;
+            @SerializedName("height")
+            private String width;
 
             public String getSize() {
                 return size;
             }
 
+            public String getResolution() {
+                return width+ "x" + height;
+            }
         }
 
     }
