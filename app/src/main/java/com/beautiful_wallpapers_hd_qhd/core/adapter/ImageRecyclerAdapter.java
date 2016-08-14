@@ -1,6 +1,5 @@
 package com.beautiful_wallpapers_hd_qhd.core.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -24,9 +23,7 @@ import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
 import com.beautiful_wallpapers_hd_qhd.core.di.MyModule;
 import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.RequestLoadListener;
 import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrAPI;
-import com.beautiful_wallpapers_hd_qhd.core.retrofit.enteties.PhotoSizes;
 import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -37,9 +34,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -82,31 +76,38 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_image, parent, false);
         return new ImageViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ImageViewHolder holder, final int position) {
-        holder.thumbnailImage.setHeightRatio(getPositionRatio(position));
+        holder.thumbnailImage.setHeightRatio(getPositionRatio(holder.getLayoutPosition()));
 
-        Observable.just(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mImageFlickrIds.get(position)))
+        Observable.just(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mImageFlickrIds.get(holder.getLayoutPosition())))
                 .subscribe(url -> {
                     if(url != null){
-                        loadImage(url, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
+                        loadImage(url, holder.thumbnailImage, holder.itemView, holder.favouriteImage, holder.getLayoutPosition());
                     } else {
-                        flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mImageFlickrIds.get(position))
+                        flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mImageFlickrIds.get(holder.getLayoutPosition()))
                                 .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                                 .map(photoSizes -> photoSizes.getSizes().getSizesArray().get(FlickrHelper.SIZE_THUMBNAIL).getSize())
                                 .subscribe(thumbUrl -> {
-                                    flickrDB.addPhoto(mImageFlickrIds.get(position), FlickrDataBaseHelper.TABLE_THUMB_SIZE, thumbUrl);
-                                    loadImage(thumbUrl, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
+                                    flickrDB.addPhoto(mImageFlickrIds.get(holder.getLayoutPosition()), FlickrDataBaseHelper.TABLE_THUMB_SIZE, thumbUrl);
+                                    loadImage(thumbUrl, holder.thumbnailImage, holder.itemView, holder.favouriteImage, holder.getLayoutPosition());
                                 });
                     }
                 });
+        holder.itemView.setOnClickListener(v -> {
+            final Intent previewIntent = new Intent(mContext.getResources().getString(R.string.preview_activity));
+            previewIntent.putExtra(mContext.getString(R.string.extra_flickr_image_id), mImageFlickrIds.get(holder.getLayoutPosition()));
 
-        //holder.itemView.startAnimation(mAnimationController.getAnimation(R.anim.zoom_grid_elem));
-        touchEventsProcessing(holder.itemView, holder.favouriteImage, position);
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+                mAnimationController.transition(holder.thumbnailImage, mContext.getString(R.string.transition_image), previewIntent);
+            } else{
+                mAnimationController.zoomCenter(holder.thumbnailImage, previewIntent);
+            }
+        });
     }
 
     @Override
@@ -134,28 +135,30 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
                 sPositionHeightRatios.append(position, (double)loadedImage.getHeight()/(double)loadedImage.getWidth());
                 favouriteIcon.setVisibility(View.INVISIBLE);
-                if(!mCategory.equals("favourite")){
-                    Animation.AnimationListener animationListener = new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
 
-                        }
+                Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if(!mCategory.equals("favourite")){
                             if(flickrDB.isFavourite(mImageFlickrIds.get(position), FlickrDatabase.FAVOURITE_PHOTO)){
                                 favouriteIcon.setVisibility(View.VISIBLE);
                                 favouriteIcon.startAnimation(mAnimationController.getAnimation(R.anim.zoom_grid_elem));
                             }
                         }
+                    }
 
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
 
-                        }
-                    };
-                    layout.startAnimation(mAnimationController.getAnimation(R.anim.zoom_grid_elem, animationListener));
-                }
+                    }
+                };
+                layout.startAnimation(mAnimationController.getAnimation(R.anim.zoom_grid_elem, animationListener));
+
             }
         });
     }
@@ -177,10 +180,10 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 final Intent previewIntent = new Intent(mContext.getResources().getString(R.string.preview_activity));
-                previewIntent.putExtra("flickrImageId", mImageFlickrIds.get(position));
+                previewIntent.putExtra(mContext.getString(R.string.extra_flickr_image_id), mImageFlickrIds.get(position));
 
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
-                    mAnimationController.transition(layout, "transition_image", previewIntent);
+                    mAnimationController.transition(layout, mContext.getString(R.string.transition_image), previewIntent);
                 } else{
                     mAnimationController.zoomCenter(layout, previewIntent);
                 }

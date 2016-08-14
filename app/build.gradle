@@ -85,7 +85,7 @@ dependencies {
 
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.edmodo:cropper:1.0.1'
-    compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.zoonref:simple-view-behavior:1.0'
     compile 'com.github.kaedea:Android-Cloud-TagView-Plus:a7518614da'
     compile 'com.github.oxoooo:touch-image-view:1.0.1'

@@ -22,7 +22,7 @@
 
     <group android:checkableBehavior="single">
 
-        <item android:title="Categories">
+        <item android:title="@string/navigation_categories">
             <menu>
                 <item
                     android:checkable="true"

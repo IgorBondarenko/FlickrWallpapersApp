@@ -14,53 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/buttons_panel"
-            android:orientation="horizontal"
-            android:background="@color/primaryColorDark"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:gravity="bottom">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/preview_set_as_btn"
-                android:textColor="#e8eaf6"
-                android:id="@+id/set_as_btn"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:layout_weight="2.5"
-                android:clickable="true"
-                android:background="@drawable/abc_item_background_holo_dark"
-                android:textSize="@dimen/set_as_text_size"/>
-            <!--android:background="@drawable/abc_ab_bottom_transparent_dark_holo" -->
-
-            <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_download"
-                android:background="@drawable/abc_item_background_holo_dark"
-                android:text="@string/preview_save_btn"
-                android:textColor="#e8eaf6"
-                android:id="@+id/save_btn"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:layout_weight="3"/>
-            <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_not_important"
-                android:background="@drawable/abc_item_background_holo_dark"
-                android:id="@+id/favourite_btn"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:layout_weight="3"/>
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2.8"/>
-        </LinearLayout>
+        <!--buttons panel-->
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"

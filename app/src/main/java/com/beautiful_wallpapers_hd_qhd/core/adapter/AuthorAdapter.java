@@ -2,6 +2,7 @@ package com.beautiful_wallpapers_hd_qhd.core.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,11 @@ import android.widget.TextView;
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.core.controller.AnimationController;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
+import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
+import com.beautiful_wallpapers_hd_qhd.core.di.MyModule;
 import com.beautiful_wallpapers_hd_qhd.core.entity.Author;
 import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.RequestLoadListener;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrAPI;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -25,7 +28,11 @@ import org.json.JSONException;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Igor on 10.04.2016.
@@ -34,6 +41,7 @@ public class AuthorAdapter extends BaseAdapter {
 
     private final FlickrHelper flickrHelper = new FlickrHelper();
     private FlickrDatabase flickrDB;
+    @Inject FlickrAPI flickrAPI;
 
     private AnimationController mAnimationController;
     private LayoutInflater mLayoutInflater;
@@ -44,6 +52,7 @@ public class AuthorAdapter extends BaseAdapter {
         this.mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.flickrDB = new FlickrDatabase(context);
         this.mAnimationController = new AnimationController(context);
+        DaggerAppComponent.builder().myModule(new MyModule(context)).build().inject(this);
     }
     static class ViewHolder {
         CircleImageView image;
@@ -71,7 +80,7 @@ public class AuthorAdapter extends BaseAdapter {
         final ViewHolder vh;
 
         if(convertView == null){
-            convertView = mLayoutInflater.inflate(R.layout.subscription_layout, parent, false);
+            convertView = mLayoutInflater.inflate(R.layout.layout_subscription, parent, false);
             vh = new ViewHolder();
             vh.image = (CircleImageView)convertView.findViewById(R.id.sub_profile_image);
             vh.name = (TextView)convertView.findViewById(R.id.sub_profile_name);
@@ -80,13 +89,31 @@ public class AuthorAdapter extends BaseAdapter {
             vh = (ViewHolder) convertView.getTag(R.string.author_view_holder);
         }
 
+        Log.d("myLog", "adapter");
+
         Author author = flickrDB.getAuthor(mAuthorFlickrIds.get(position));
         if(author != null){
             vh.name.setText(!author.getRealName().equals("") ? author.getRealName() + "\n" + author.getUserName() : author.getUserName());
-            if(author.getUserAvatar() != null){
+            /*if(author.getUserAvatar() != null){
                 loadImage(author.getUserAvatar(), vh.image);
-            }
+            }*/
+
+            flickrAPI.getAuthorIcon(FlickrHelper.METHOD_PEOPLE_GET_INFO, author.getNsid())
+                    .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                    .map(userIcon -> userIcon.getIcon())
+                    .subscribe(icon -> {
+                        author.setUserAvatar(Integer.valueOf(icon.getIconServer()) == 0 ? null : FlickrHelper.getUserAvatar(icon.getIconFarm(), icon.getIconServer(), icon.getNsid()));
+                        loadImage(author.getUserAvatar(), vh.image);
+
+                        Log.d("myTag1", "adapter "+author.getUserAvatar());
+
+                        flickrDB.updateAuthor(author);
+                        //flickrDB.addAuthor(author);
+                    });
+
         } else {
+
+            /*
             flickrHelper.processRequest(FlickrHelper.METHOD_PEOPLE_GET_INFO, FlickrHelper.ARG_USER_ID, mAuthorFlickrIds.get(position), new RequestLoadListener() {
                 @Override
                 public void onLoad(byte[] responseBody) {
@@ -108,7 +135,7 @@ public class AuthorAdapter extends BaseAdapter {
                 public void onFail(int statusCode, Throwable error) {
 
                 }
-            });
+            });*/
         }
         return convertView;
     }

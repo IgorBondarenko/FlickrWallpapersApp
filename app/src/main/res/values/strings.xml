@@ -148,7 +148,48 @@
     <string name="image_quality_low">Low image quality</string>
     <string name="image_quality_high">High image quality</string>
 
-    <!-- activity-->
+    <!-- facebook-->
+    <string name="app_id" translatable="false">388087941388995</string>
+
+    <!--advertisment's ids-->
+    <string name="main_activity_banner" translatable="false">ca-app-pub-8347960194719275/1381303942</string>
+    <string name="preview_activity_banner" translatable="false">ca-app-pub-8347960194719275/4990163542</string>
+
+    <string name="hide_information">HIDE INFORMATION</string>
+    <string name="view_more">VIEW MORE INFORMATION</string>
+    <string name="buy_pro_advantages_text1">Disable advertisement</string>
+    <string name="buy_pro_advantages_text2">Added the ability to automatically change the wallpaper on schedule</string>
+    <string name="restart_app">Please restart app</string>
+    <string name="action_buy_pro">Buy PRO-version</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="action_try_again">Try again</string>
+    <string name="navigation_categories">Categories</string>
+
+    <string name="subscribe_button">Subscribe</string>
+    <string name="unsubscribe_button">Unsubscribe</string>
+    <string name="not_bought_pro">You haven\'t bought PRO-version</string>
+
+    <!--intent's extras-->
+    <string name="extra_flickr_author_id" translatable="false">flickr_author_id</string>
+    <string name="extra_flickr_author_realname" translatable="false">flickr_author_realname</string>
+    <string name="extra_flickr_author_username" translatable="false">flickr_author_username</string>
+    <string name="extra_flickr_image_id" translatable="false">flickrImageId</string>
+
+    <!--transition-->
+    <string name="transition_author_image" translatable="false">transition_author_image</string>
+    <string name="transition_image" translatable="false">transition_image</string>
+    <string name="transition_card" translatable="false">transition_card</string>
+    <string name="transition_button" translatable="false">transition_button</string>
+
+    <!--view holder-->
+    <string name="image_view_holder" translatable="false">adapter1</string>
+    <string name="author_view_holder" translatable="false">adapter2</string>
+
+    <!--activity title-->
+    <string name="title_activity_main" translatable="false">MainActivity</string>
+    <string name="title_activity_scrolling" translatable="false">ScrollingActivity</string>
+
+    <!-- activity intent-->
     <string name="author_page_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTHOR_PAGE_ACTIVITY</string>
     <string name="author_web_profile_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.AUTHOR_WEB_PROFILE_ACTIVITY</string>
     <string name="scaling_image_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.SCALING_IMAGE_ACTIVITY</string>
@@ -156,12 +197,10 @@
     <string name="exit_app_dialog" translatable="false">com.beautiful_wallpapers_hd_qhd.EXIT_DIALOG</string>
     <string name="buy_pro_dialog" translatable="false">com.beautiful_wallpapers_hd_qhd.BUY_PRO_DIALOG</string>
     <string name="card_information_dialog" translatable="false">com.beautiful_wallpapers_hd_qhd.CARD_INFORMATION_DIALOG</string>
-
-    <string name="main_activity" translatable="false">com.wallpapers_hd_qhd.MAIN_ACTIVITY</string>
     <string name="preview_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.PREVIEW_ACTIVITY</string>
-    <string name="full_screen_activity" translatable="false">com.wallpapers_hd_qhd.FULL_SCREEN_ACTIVITY</string>
-    <string name="save_activity" translatable="false">com.wallpapers_hd_qhd.SAVE_ACTIVITY</string>
     <string name="crop_image_activity" translatable="false">com.beautiful_wallpapers_hd_qhd.CROP_IMAGE_ACTIVITY</string>
+
+    <string name="save_activity" translatable="false">com.wallpapers_hd_qhd.SAVE_ACTIVITY</string>
     <string name="tutorial_activity" translatable="false">com.wallpapers_hd_qhd.TUTORIAL_ACTIVITY</string>
     <string name="licence_activity" translatable="false">com.wallpapers_hd_qhd.LICENCE_ACTIVITY</string>
     <string name="about_activity" translatable="false">com.wallpapers_hd_qhd.ABOUT_ACTIVITY</string>
@@ -169,37 +208,8 @@
     <string name="process_app_activity" translatable="false">com.wallpapers_hd_qhd.PROCESS_APP_ACTIVITY</string>
 
     <string name="choose_account_activity" translatable="false">com.wallpapers_hd_qhd.CHOOSE_ACCOUNT_ACTIVITY</string>
-    <string name="available_in_pro_activity" translatable="false">com.wallpapers_hd_qhd.AVAILABLE_IN_PRO_ACTIVITY</string>
     <string name="delete_old_version_activity" translatable="false">com.wallpapers_hd_qhd.DELETE_OLD_VERSION_ACTIVITY</string>
-    <string name="news_activity" translatable="false">com.wallpapers_hd_qhd.NEWS_ACTIVITY</string>
-
-    <!--intent extras-->
-    <string name="flickr_author_id" translatable="false">flickr_author_id</string>
-    <string name="flickr_author_realname" translatable="false">flickr_author_realname</string>
-    <string name="flickr_author_username" translatable="false">flickr_author_username</string>
-
-    <!-- id-->
-    <!-- facebook-->
-    <string name="app_id" translatable="false">388087941388995</string>
-
-    <string name="title_activity_main" translatable="false">MainActivity</string>
-    <string name="title_activity_scrolling" translatable="false">ScrollingActivity</string>
-
-    <string name="main_activity_banner" translatable="false">ca-app-pub-8347960194719275/1381303942</string>
-    <string name="preview_activity_banner" translatable="false">ca-app-pub-8347960194719275/4990163542</string>
-
-
-    <string name="image_view_holder" translatable="false">adapter1</string>
-    <string name="author_view_holder" translatable="false">adapter2</string>
 
     <string name="flickr_author_page_url" translatable="false"><a href="">http://flickr.com/%1$s</a></string>
-    <string name="hide_information">HIDE INFORMATION</string>
-    <string name="view_more">VIEW MORE INFORMATION</string>
-    <string name="buy_pro_advantages_text1">Disable advertisement</string>
-    <string name="buy_pro_advantages_text2">Added the ability to automatically change the wallpaper on schedule</string>
-    <string name="restart_app">Please restart app</string>
-    <string name="action_buy_pro">Buy PRO-vresion</string>
-    <string name="no_internet_connection">No internet connection.</string>
-    <string name="action_try_again">Try again</string>
 
 </resources>

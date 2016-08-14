@@ -5,22 +5,30 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
-import android.view.*;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.core.Advertising;
 import com.beautiful_wallpapers_hd_qhd.core.Device;
 import com.beautiful_wallpapers_hd_qhd.core.WallpaperInstaller;
-import com.beautiful_wallpapers_hd_qhd.core.WallpapersApplication;
 import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesController;
-import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDataBaseHelper;
+import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
 import com.beautiful_wallpapers_hd_qhd.core.di.MyModule;
 import com.edmodo.cropper.CropImageView;
@@ -61,7 +69,7 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
     private String mFlickrImageId;
     private String mFlickrImageUrl;
 
-    Bitmap mImage;
+    private Bitmap mImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +77,15 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_image);
 
-        //WallpapersApplication.getComponent().inject(this);
         DaggerAppComponent.builder().myModule(new MyModule(this)).build().inject(this);
         ButterKnife.bind(this);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(mDisplayMetrics);
 
-        mFlickrImageId = getIntent().getStringExtra("flickrImageId");
+        mFlickrImageId = getIntent().getStringExtra(getString(R.string.extra_flickr_image_id));
         mFlickrImageUrl = flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, mFlickrImageId);
 
         mSwitcher.setOnCheckedChangeListener(this);
@@ -100,7 +106,7 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
             }
         } catch (NullPointerException e){
             Intent previewIntent = new Intent(getResources().getString(R.string.preview_activity));
-            previewIntent.putExtra("flickrImageId", mFlickrImageId);
+            previewIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrImageId);
             startActivity(previewIntent);
         }
 

@@ -47,7 +47,8 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="SUBSCRIBE"
+                    android:text="@string/subscribe_button"
+                    android:textAllCaps="true"
                     android:id="@+id/author_subscribe_btn"
                     android:background="@drawable/rounded_button"
                     android:textColor="@android:color/white"
@@ -57,7 +58,8 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="UNSUBSCRIBE"
+                    android:text="@string/unsubscribe_button"
+                    android:textAllCaps="true"
                     android:id="@+id/author_unsubscribe_btn"
                     android:background="@drawable/rounded_color_button"
                     android:textColor="@android:color/white"
@@ -84,19 +86,26 @@
     <de.hdodenhof.circleimageview.CircleImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:src="@drawable/contact"
         android:layout_gravity="center|top"
-        android:layout_marginTop="50dp"
-        android:transitionName="transition_author_image"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:elevation="10dp"
+        android:transitionName="@string/transition_author_image"
 
         app:layout_behavior="com.zoonref.SimpleViewBehavior"
         app:dependsOn="@+id/app_bar"
         app:dependType="y"
-        app:dependTargetY="-100dp"
-        app:animation="@anim/zoom_out"
+        app:dependTargetY="@dimen/app_bar_height_half_negative"
+        app:targetX="@dimen/app_bar_targetX"
+        app:targetY="@dimen/app_bar_targetY"
+        app:targetWidth="?attr/actionBarSize"
+        app:targetHeight="?attr/actionBarSize"
 
+        app:civ_fill_color="@android:color/white"
         app:civ_border_width="2dp"
         app:civ_border_color="@android:color/white" />
 
@@ -109,25 +118,31 @@
         android:gravity="center"
         android:text="Name Surname\n[nickname]"
         android:textColor="@android:color/white"
+        android:paddingLeft="?attr/actionBarSize"
+        android:paddingRight="?attr/actionBarSize"
 
         app:layout_behavior="com.zoonref.SimpleViewBehavior"
         app:dependsOn="@+id/app_bar"
         app:dependType="y"
-        app:dependTargetY="-116dp"
-        app:targetX="48dp"
-        app:targetY="0dp"
-        android:id="@+id/profile_name" />
+        app:dependTargetY="@dimen/app_bar_height_half_negative"
+        app:targetX="@dimen/app_bar_targetX"
+        app:targetY="@dimen/app_bar_targetY"
+        android:id="@+id/profile_name"
+        android:textStyle="bold"
+        android:textSize="20sp" />
 
-    <com.etsy.android.grid.StaggeredGridView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/author_images_grid_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="4dp"
-        app:column_count="@integer/columns"
-        android:scrollingCache="true"
-        android:smoothScrollbar="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+    <!--<com.etsy.android.grid.StaggeredGridView-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/author_images_grid_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:padding="4dp"-->
+        <!--app:column_count="@integer/columns"-->
+        <!--android:scrollingCache="true"-->
+        <!--android:smoothScrollbar="true"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"/>-->
+
+    <include layout="@layout/content_author"/>
 
 </android.support.design.widget.CoordinatorLayout>

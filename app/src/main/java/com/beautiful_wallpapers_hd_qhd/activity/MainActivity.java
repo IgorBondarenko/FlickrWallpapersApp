@@ -4,6 +4,11 @@ import android.accounts.AccountManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -17,13 +22,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -58,9 +61,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.images_grid_view) RecyclerView mGridViewImages;
     @BindView(R.id.authors_grid_view) GridView mGridViewAuthors;
     @BindView(R.id.progressBar) ProgressBar mProgressBar;
+    @BindView(R.id.nav_view) NavigationView mNavigationView;
+
     private ImageRecyclerAdapter mImageAdapter;
     private String mAccountEmail;
 
@@ -108,8 +110,8 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        //final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         new NotificationReceiver().start(this);
 
@@ -118,18 +120,85 @@ public class MainActivity extends AppCompatActivity
             initImageAdapter(flickrImageIds, "tagSearch");
             updateAdapter(flickrAPI.getPhotosInGroupByTags(FlickrHelper.METHOD_SEARCH, tag));
             setTitle("#"+tag);
+            initSwipe(ItemTouchHelper.RIGHT);
         } else {
             if(mTitle != 0){
                 setTitle(mTitle);
             }
-            navigationView.getMenu().findItem(mCurrentSelectedPosition).setChecked(true);
-            onNavigationItemSelected(navigationView.getMenu().findItem(mCurrentSelectedPosition));
+            mNavigationView.getMenu().findItem(mCurrentSelectedPosition).setChecked(true);
+            onNavigationItemSelected(mNavigationView.getMenu().findItem(mCurrentSelectedPosition));
         }
 
         if(!(isProActivated = sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false))){
-            new Advertising(this).loadSmartBanner(R.id.main_ad_view);
+            Advertising advertising = new Advertising(this);
+            advertising.showStub(R.id.main_ad_stub);
+            advertising.loadSmartBanner(R.id.main_ad_view);
         }
+    }
 
+    private ItemTouchHelper itemTouchHelper;
+    private Paint p = new Paint();
+
+    private void initSwipe(int swipeDirection) {
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, swipeDirection) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if (direction == ItemTouchHelper.RIGHT) {
+                    flickrDB.addFavourite(flickrImageIds.get(viewHolder.getLayoutPosition()), FlickrDatabase.FAVOURITE_PHOTO);
+                    mImageAdapter.notifyItemChanged(viewHolder.getLayoutPosition());
+                    Toast.makeText(MainActivity.this, R.string.preview_add_to_favourite, Toast.LENGTH_LONG).show();
+                } else {
+                    flickrDB.removeFavourite(flickrImageIds.get(viewHolder.getLayoutPosition()), FlickrDatabase.FAVOURITE_PHOTO);
+                    mImageAdapter.notifyItemRemoved(viewHolder.getLayoutPosition());
+                    flickrImageIds.remove(viewHolder.getLayoutPosition());
+                    Toast.makeText(MainActivity.this, R.string.preview_remove_from_favourite, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                Bitmap icon;
+                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+
+                    View itemView = viewHolder.itemView;
+                    float height = ((float) itemView.getBottom() - (float) itemView.getTop())/2;
+                    float width = height / 3;
+
+                    if(dX > 0){
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_star_yellow);
+                        int alpha = (int) (((255 * dX)/itemView.getWidth()));
+                        p.setAlpha(alpha > 255 ? 255 : alpha);
+                        RectF icon_dest = new RectF((float) itemView.getLeft() + width, itemView.getTop() + 2*width, (float) itemView.getLeft() + 3*width, itemView.getBottom() - 2*width);
+                        c.drawBitmap(icon, null, icon_dest, p);
+                    } else {
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete_red);
+                        int alpha = (int) (((255 * Math.abs(dX))/itemView.getWidth()));
+                        p.setAlpha(alpha > 255 ? 255 : alpha);
+                        RectF icon_dest = new RectF((float) itemView.getRight() - 3*width, itemView.getTop() + 2*width, (float) itemView.getRight() - width, itemView.getBottom() - 2*width);
+                        c.drawBitmap(icon, null, icon_dest, p);
+                    }
+                }
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+
+            @Override
+            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                if(swipeDirection == ItemTouchHelper.RIGHT & flickrDB.isFavourite(flickrImageIds.get(viewHolder.getLayoutPosition()), FlickrDatabase.FAVOURITE_PHOTO)){
+                    viewHolder.itemView.startAnimation(animationController.getAnimation(R.anim.already_added));
+                    return 0;
+                }
+                return super.getSwipeDirs(recyclerView, viewHolder);
+            }
+        };
+
+        itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(mGridViewImages);
     }
 
     @Override
@@ -143,7 +212,13 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            startActivityForResult(new Intent(getString(R.string.exit_app_dialog)), REQUEST_CODE_EXIT);
+            if(mCurrentSelectedPosition == R.id.nav_category_all){
+                startActivityForResult(new Intent(getString(R.string.exit_app_dialog)), REQUEST_CODE_EXIT);
+            } else {
+                mCurrentSelectedPosition = R.id.nav_category_all;
+                mNavigationView.getMenu().findItem(mCurrentSelectedPosition).setChecked(true);
+                onNavigationItemSelected(mNavigationView.getMenu().findItem(mCurrentSelectedPosition));
+            }
         }
     }
 
@@ -171,15 +246,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initializePurchases(){
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    showToast("Problem setting up in-app billing: " + result);
-                    return;
-                }
-                if (mHelper == null) return;
-                mHelper.queryInventoryAsync(mGotInventoryListener);
+        mHelper.startSetup(result -> {
+            if (!result.isSuccess()) {
+                showToast("Problem setting up in-app billing: " + result);
+                return;
             }
+            if (mHelper == null) return;
+            mHelper.queryInventoryAsync(mGotInventoryListener);
         });
     }
 
@@ -196,7 +269,7 @@ public class MainActivity extends AppCompatActivity
                 sPref.setBool(SharedPreferencesController.SP_PRO_VERSION, true);
                 showToast(getString(R.string.restart_app));
             } else {
-                showToast("You haven't bought PRO-version");
+                showToast(getString(R.string.not_bought_pro));
             }
         }
     };
@@ -286,7 +359,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_category_fav:
                 flickrImageIds = flickrDB.getFavourites(FlickrDatabase.FAVOURITE_PHOTO);
-                initImageAdapter(flickrImageIds, "mFavouriteImage");
+                initImageAdapter(flickrImageIds, "favourite");
                 mProgressBar.setVisibility(View.GONE);
                 saveCurrent(R.id.nav_category_fav, R.string.title_section3);
                 break;
@@ -299,9 +372,9 @@ public class MainActivity extends AppCompatActivity
                 mGridViewAuthors.setAdapter(mAuthorAdapter);
                 mGridViewAuthors.setOnItemClickListener((parent, view, position, id) -> {
                     Intent authorPageIntent = new Intent(getResources().getString(R.string.author_page_activity));
-                    authorPageIntent.putExtra(getResources().getString(R.string.flickr_author_id), flickrAuthorIds.get(position));
+                    authorPageIntent.putExtra(getResources().getString(R.string.extra_flickr_author_id), flickrAuthorIds.get(position));
                     if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
-                        animationController.transition(view.findViewById(R.id.sub_profile_image), "transition_author_image", authorPageIntent);
+                        animationController.transition(view.findViewById(R.id.sub_profile_image), getString(R.string.transition_author_image), authorPageIntent);
                     } else {
                         startActivity(authorPageIntent);
                     }
@@ -352,6 +425,10 @@ public class MainActivity extends AppCompatActivity
 
     private void saveCurrent(int position, int titleRes){
         mCurrentSelectedPosition = position;
+        if(itemTouchHelper != null){
+            itemTouchHelper.attachToRecyclerView(null);
+        }
+        initSwipe(position != R.id.nav_category_fav ?ItemTouchHelper.RIGHT : ItemTouchHelper.LEFT);
         mTitle = titleRes;
         setTitle(mTitle);
     }

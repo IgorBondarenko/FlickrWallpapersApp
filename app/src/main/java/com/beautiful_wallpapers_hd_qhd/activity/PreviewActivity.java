@@ -1,11 +1,11 @@
 package com.beautiful_wallpapers_hd_qhd.activity;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -52,31 +52,20 @@ import com.beautiful_wallpapers_hd_qhd.core.entity.Author;
 import com.beautiful_wallpapers_hd_qhd.core.entity.FlickrImageEXIF;
 import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
 import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrAPI;
-import com.beautiful_wallpapers_hd_qhd.core.retrofit.enteties.ImageEXIF;
-import com.beautiful_wallpapers_hd_qhd.core.retrofit.enteties.PhotoInformation;
-import com.beautiful_wallpapers_hd_qhd.core.retrofit.enteties.PhotoSizes;
-import com.beautiful_wallpapers_hd_qhd.core.retrofit.enteties.UserIcon;
 import com.beautiful_wallpapers_hd_qhd.core.view.ResizablePortraitImageView;
 import com.beautiful_wallpapers_hd_qhd.core.view.helper.ListViewHelper;
 import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.kaede.tagview.OnTagClickListener;
 import me.kaede.tagview.Tag;
 import me.kaede.tagview.TagView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -127,9 +116,7 @@ public class PreviewActivity extends AppCompatActivity {
         DaggerAppComponent.builder().myModule(new MyModule(this)).build().inject(this);
         ButterKnife.bind(this);
 
-        mFlickrIamgeId = getIntent().getStringExtra("flickrImageId");
-
-        mImageLoader.displayImage(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mFlickrIamgeId), mImageView);
+        mFlickrIamgeId = getIntent().getStringExtra(getString(R.string.extra_flickr_image_id));
         previewImageUrl = flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, mFlickrIamgeId);
 
         if(previewImageUrl != null){
@@ -145,17 +132,14 @@ public class PreviewActivity extends AppCompatActivity {
         loadTags();
 
         if(!(isProVersion = sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false))){
-            LinearLayout adStub = (LinearLayout)findViewById(R.id.preview_ad_stub);
-            adStub.setVisibility(View.VISIBLE);
-            AdSize smartBanner = AdSize.SMART_BANNER;
-            adStub.setMinimumHeight(smartBanner.getHeightInPixels(this));
+            mAdvertising.showStub(R.id.preview_ad_stub);
             mAdvertising.loadSmartBanner(R.id.preview_ad_view);
         }
 
         mScaleFAB.setOnClickListener(view -> {
             Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
-            scalingImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
-            mAnimationController.transition(mImageView, "transition_image", scalingImageIntent);
+            scalingImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrIamgeId);
+            mAnimationController.transition(mImageView, getString(R.string.transition_image), scalingImageIntent);
         });
     }
 
@@ -193,7 +177,8 @@ public class PreviewActivity extends AppCompatActivity {
     private void loadPreviewImage(String url){
 
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheOnDisk(true)
+                .cacheOnDisk(true) //true
+                .showImageOnLoading(new BitmapDrawable(getResources(), mImageLoader.loadImageSync(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mFlickrIamgeId)))) //new
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .build();
 
@@ -205,8 +190,8 @@ public class PreviewActivity extends AppCompatActivity {
 
                 mImageView.setOnClickListener(v -> {
                     Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
-                    scalingImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
-                    mAnimationController.transition(mImageView, "transition_image", scalingImageIntent);
+                    scalingImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrIamgeId);
+                    mAnimationController.transition(mImageView, getString(R.string.transition_image), scalingImageIntent);
                 });
 
                 mProgressBar.startAnimation(mAnimationController.getAnimation(android.R.anim.slide_out_right, new AnimationController.BaseAnimationListener() {
@@ -248,10 +233,11 @@ public class PreviewActivity extends AppCompatActivity {
         View.OnClickListener ocl = v -> {
             switch (v.getId()){
                 case R.id.set_as_btn:
+                    Log.d("MyLog", "CROP");
                     Intent cropImageIntent = new Intent(getResources().getString(R.string.crop_image_activity));
-                    cropImageIntent.putExtra("flickrImageId", mFlickrIamgeId);
-                    Pair<View, String> p1 = Pair.create((View) mImageView, "transition_image");
-                    Pair<View, String> p2 = Pair.create((View) mScaleFAB, "transition_button");
+                    cropImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrIamgeId);
+                    Pair<View, String> p1 = Pair.create((View) mImageView, getString(R.string.transition_image));
+                    Pair<View, String> p2 = Pair.create((View) mScaleFAB, getString(R.string.transition_button));
                     mAnimationController.transition(cropImageIntent, p1, p2);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                     //analytics.registerEvent("Preview", Analytics.BUTTON_PRESSED, "set as", 0);
@@ -326,10 +312,16 @@ public class PreviewActivity extends AppCompatActivity {
             case R.id.action_settings:
                 return true;
             case android.R.id.home:
-                super.onBackPressed();
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        mImageLoader.getDiskCache().remove(previewImageUrl);
+        super.onBackPressed();
     }
 
     private void loadTabs(){
@@ -396,10 +388,18 @@ public class PreviewActivity extends AppCompatActivity {
                                         .map(userIcon -> userIcon.getIcon())
                                         .subscribe(icon -> {
                                             String nsid = icon.getNsid(); String iconfarm = icon.getIconFarm(); String iconserver = icon.getIconServer();
+                                            author.setUserAvatar(Integer.valueOf(iconserver) == 0 ? null : FlickrHelper.getUserAvatar(iconfarm, iconserver, nsid));
+
                                             if(flickrDB.getAuthor(nsid) == null){
+                                                flickrDB.addAuthor(author);
+                                            } else {
+                                                flickrDB.updateAuthor(author);
+                                            }
+
+                                            /*if(flickrDB.getAuthor(nsid) == null){
                                                 author.setUserAvatar(Integer.valueOf(iconserver) == 0 ? null : FlickrHelper.getUserAvatar(iconfarm, iconserver, nsid));
                                                 flickrDB.addAuthor(author);
-                                            }
+                                            }*/
                                         });
                                 return author;
                             })
@@ -478,7 +478,7 @@ public class PreviewActivity extends AppCompatActivity {
                         dialog.putExtra("image_obj", (FlickrImageEXIF)object);
                         break;
                 }
-                new AnimationController(getContext()).transition(card, "transition_card", dialog);
+                new AnimationController(getContext()).transition(card, getString(R.string.transition_card), dialog);
             };
         }
     }

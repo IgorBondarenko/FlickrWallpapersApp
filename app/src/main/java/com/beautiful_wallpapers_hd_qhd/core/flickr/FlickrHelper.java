@@ -26,7 +26,7 @@ public class FlickrHelper {
     public static final String GROUP_ID = "2781725@N20";
     public static final String URL = "https://api.flickr.com/services/rest/";
     public static final String RETRO_URL = "https://api.flickr.com/";
-    public static final String FLICKR_USER_HP = "https://www.flickr.com/people/";
+    public static final String FLICKR_USER_HP = "https://flickr.com/people/";
     public static final String FLICKR_USER_SEND_MAIL = "https://www.flickr.com/mail/write/?to=";
 
     //methods

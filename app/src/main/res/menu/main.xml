@@ -15,7 +15,7 @@
         app:showAsAction="always"/>
 
     <item android:id="@+id/action_restore_purchase"
-        android:title="@string/action_restore_purchase"
+        android:title="@string/action_restore_pro"
         app:showAsAction="never"/>
 
 </menu>

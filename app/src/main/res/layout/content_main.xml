@@ -13,28 +13,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="4dp"
-        android:id="@+id/images_grid_view">
+        android:id="@+id/images_grid_view"
+        android:layout_above="@+id/main_ad_stub">
 
     </android.support.v7.widget.RecyclerView>
 
-    <com.etsy.android.grid.StaggeredGridView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/grid_view_authors1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:item_margin="8dp"
-        app:column_count="@integer/columns"
-        android:scrollingCache="true"
-        android:smoothScrollbar="true"
-        android:visibility="gone" />
+    <!--<com.etsy.android.grid.StaggeredGridView-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/grid_view_authors1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:item_margin="8dp"-->
+        <!--app:column_count="@integer/columns"-->
+        <!--android:scrollingCache="true"-->
+        <!--android:smoothScrollbar="true"-->
+        <!--android:visibility="gone" />-->
 
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/authors_grid_view"
         android:numColumns="@integer/columns"
-        android:layout_margin="8dp" />
+        android:layout_margin="8dp"
+        android:layout_above="@+id/main_ad_stub" />
 
     <ProgressBar
         android:layout_width="50dp"
@@ -54,5 +56,14 @@
         ads:adUnitId="ca-app-pub-8347960194719275/1381303942"
         ads:adSize="SMART_BANNER">
     </com.google.android.gms.ads.AdView>
+
+    <LinearLayout
+        android:id="@+id/main_ad_stub"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_alignParentBottom="true">
+    </LinearLayout>
 
 </RelativeLayout>

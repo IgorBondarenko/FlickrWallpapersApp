@@ -108,6 +108,48 @@ public class AnimationController {
         targetView.startAnimation(anim_pressed);
     }
 
+    public void show(View view, int animRes){
+        Animation anim = getAnimation(animRes);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                view.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(anim);
+    }
+
+    public void hide(View view, int animRes){
+        Animation anim = getAnimation(animRes);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(anim);
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void circularReveal(final View circularView, final View backgroundView, final int backgroundColor) {
         int cx = (circularView.getLeft() + circularView.getRight()) / 2;

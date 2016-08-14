@@ -164,6 +164,12 @@ public class FlickrDatabase {
         dataBase.insert(FlickrDataBaseHelper.TABLE_AUTHORS, null, cv);
     }
 
+    public void updateAuthor(Author author){
+        ContentValues cv = new ContentValues();
+        cv.put(FlickrDataBaseHelper.TABLE_AUTHOR_AVATAR, author.getUserAvatar());
+        dataBase.update(FlickrDataBaseHelper.TABLE_AUTHORS, cv, FlickrDataBaseHelper.TABLE_AUTHOR_NSID + "= ?", new String[]{author.getNsid()});
+    }
+
     public Author getAuthor(String flickrAuthorNsid){
         Cursor c = null;
         try {

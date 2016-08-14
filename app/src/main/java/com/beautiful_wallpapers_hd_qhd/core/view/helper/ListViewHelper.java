@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -45,7 +44,7 @@ public class ListViewHelper {
                     break;
                 case 2:
                     Intent authorPageIntent = new Intent(mContext.getResources().getString(R.string.author_page_activity));
-                    authorPageIntent.putExtra(mContext.getResources().getString(R.string.flickr_author_id), author.getNsid());
+                    authorPageIntent.putExtra(mContext.getResources().getString(R.string.extra_flickr_author_id), author.getNsid());
                     mContext.startActivity(authorPageIntent);
                     break;
                 case 3:
@@ -81,7 +80,7 @@ public class ListViewHelper {
 
         String[] from = {"icon", "title", "value"};
         int[] to = { R.id.image_inform_iv, R.id.image_inform_title_tv, R.id.image_inform_tv};
-        SimpleAdapter adapter = new SimpleAdapter(mContext, data, R.layout.image_information_layout, from, to);
+        SimpleAdapter adapter = new SimpleAdapter(mContext, data, R.layout.layout_image_information, from, to);
         adapter.setViewBinder((view, data1, textRepresentation) -> {
             switch (view.getId()){
                 case R.id.image_inform_tv:

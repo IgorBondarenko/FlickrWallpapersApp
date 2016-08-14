@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/information_card"
-        android:transitionName="transition_card"
+        android:transitionName="@string/transition_card"
         card:cardElevation="2dp">
 
         <LinearLayout

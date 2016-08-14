@@ -8,6 +8,7 @@ import com.beautiful_wallpapers_hd_qhd.activity.ScalingImageActivity;
 import com.beautiful_wallpapers_hd_qhd.activity.dialog.AutoUpdateDialog;
 import com.beautiful_wallpapers_hd_qhd.activity.dialog.BuyProDialog;
 import com.beautiful_wallpapers_hd_qhd.core.FirebaseAnalytic;
+import com.beautiful_wallpapers_hd_qhd.core.adapter.AuthorAdapter;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.ImageRecyclerAdapter;
 
 import dagger.Component;
@@ -26,6 +27,7 @@ public interface AppComponent {
     void inject(AuthorPageActivity activity);
     void inject(ScalingImageActivity activity);
     void inject(ImageRecyclerAdapter adapter);
+    void inject(AuthorAdapter adapter);
     void inject(FirebaseAnalytic component);
     void inject(BuyProDialog dialog);
 

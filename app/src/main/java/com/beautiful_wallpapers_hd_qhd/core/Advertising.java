@@ -2,9 +2,11 @@ package com.beautiful_wallpapers_hd_qhd.core;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.beautiful_wallpapers_hd_qhd.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -22,7 +24,7 @@ public class Advertising {
     public static final String SAVE_ACTIVITY_AD_ID = "ca-app-pub-8347960194719275/7943629942";
     public static final String CROP_IMAGE_ACTIVITY_AD_ID = "ca-app-pub-8347960194719275/1897096344";
 
-    private static final String TEST_DEVICE_ID = "4E838BCAB8BDC27E015FAF10BFED0F90";
+    private static final String TEST_DEVICE_ID = "BCBDA348A3EEB25AF09A2ACEFA17C4CC";
     private static final boolean TEST_MODE = true;
 
     private Context mContext;
@@ -59,6 +61,13 @@ public class Advertising {
                 interstitial.show();
             }
         });
+    }
+
+    public void showStub(int stubId){
+        LinearLayout adStub = (LinearLayout) ((Activity)mContext).findViewById(stubId);
+        adStub.setVisibility(View.VISIBLE);
+        AdSize smartBanner = AdSize.SMART_BANNER;
+        adStub.setMinimumHeight(smartBanner.getHeightInPixels(mContext));
     }
 
     public void loadFullScreenAd(){

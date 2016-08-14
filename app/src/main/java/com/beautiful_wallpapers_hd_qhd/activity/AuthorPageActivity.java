@@ -5,16 +5,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.beautiful_wallpapers_hd_qhd.R;
-import com.beautiful_wallpapers_hd_qhd.core.adapter.ImageAdapter;
+import com.beautiful_wallpapers_hd_qhd.core.adapter.ImageRecyclerAdapter;
 import com.beautiful_wallpapers_hd_qhd.core.controller.AnimationController;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
@@ -22,7 +24,6 @@ import com.beautiful_wallpapers_hd_qhd.core.di.MyModule;
 import com.beautiful_wallpapers_hd_qhd.core.entity.Author;
 import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
 import com.beautiful_wallpapers_hd_qhd.core.flickr.RequestLoadListener;
-import com.etsy.android.grid.StaggeredGridView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -48,9 +49,12 @@ public class AuthorPageActivity extends AppCompatActivity implements View.OnClic
     private String mAuthorFlickrId;
     private Author mAuthor;
 
-    @BindView(R.id.author_images_grid_view) StaggeredGridView mGridView;
+    //@BindView(R.id.author_images_grid_view) StaggeredGridView mGridView;
+    @BindView(R.id.author_images_recycler_view) RecyclerView mRecyclerView;
+
     @BindView(R.id.profile_image) CircleImageView mAuthorAvatar;
-    private ImageAdapter mImageAdapter;
+    //private ImageAdapter mImageAdapter;
+    private ImageRecyclerAdapter mImageAdapter;
 
     @BindView(R.id.author_subscribe_btn) Button subscribeBtn;
     @BindView(R.id.author_unsubscribe_btn) Button unsubscribeBtn;
@@ -72,7 +76,7 @@ public class AuthorPageActivity extends AppCompatActivity implements View.OnClic
 
         final LinearLayout circularLayout = (LinearLayout)findViewById(R.id.circular_reveal_background);
 
-        mAuthorFlickrId = getIntent().getStringExtra(getResources().getString(R.string.flickr_author_id));
+        mAuthorFlickrId = getIntent().getStringExtra(getResources().getString(R.string.extra_flickr_author_id));
         mAuthor = flickrDB.getAuthor(mAuthorFlickrId);
         isAuthorFavourite = flickrDB.isFavourite(mAuthorFlickrId, FlickrDatabase.FAVOURITE_AUTHOR);
 
@@ -98,7 +102,7 @@ public class AuthorPageActivity extends AppCompatActivity implements View.OnClic
             });
 
         } else {
-            circularLayout.setVisibility(View.GONE);
+            circularLayout.setVisibility(View.VISIBLE);
         }
 
         if(mAuthor.getUserAvatar() != null) {
@@ -109,12 +113,19 @@ public class AuthorPageActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setAdapter(String userId){
-        mImageAdapter = new ImageAdapter(this, flickrImagesId, "author_"+flickrImagesId);
-        mGridView.setAdapter(mImageAdapter);
+//        mImageAdapter = new ImageAdapter(this, flickrImagesId, "author_"+flickrImagesId);
+        mImageAdapter = new ImageRecyclerAdapter(this, flickrImagesId, "author_"+flickrImagesId);
+
+//        mGridView.setAdapter(mImageAdapter);
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.columns), StaggeredGridLayoutManager.VERTICAL));
+        mRecyclerView.setAdapter(mImageAdapter);
+
+        //todo change to Retrofit
         flickrHelper.processRequestSearch(FlickrHelper.ARG_USER_ID, userId, new RequestLoadListener() {
             @Override
             public void onLoad(byte[] responseBody) {
                 for (int i = 0; i < flickrHelper.getJSONArray(responseBody, "photos", "photo").length(); i++) {
+                    Log.d("myLog", flickrHelper.getValue(responseBody, "photos", "photo", i, "id"));
                     flickrImagesId.add(flickrHelper.getValue(responseBody, "photos", "photo", i, "id"));
                 }
                 mImageAdapter.notifyDataSetChanged();

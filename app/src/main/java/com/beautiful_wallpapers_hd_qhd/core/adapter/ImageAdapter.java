@@ -1,6 +1,5 @@
 package com.beautiful_wallpapers_hd_qhd.core.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -84,7 +83,7 @@ public class ImageAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder vh;
         if(convertView == null){
-            convertView = mLayoutInflater.inflate(R.layout.image_layout, parent, false);
+            convertView = mLayoutInflater.inflate(R.layout.layout_image, parent, false);
             convertView.setVisibility(View.VISIBLE);
             vh = new ViewHolder();
             vh.thumbnailImage = (DynamicHeightImageView)convertView.findViewById(R.id.small_img);
@@ -184,10 +183,10 @@ public class ImageAdapter extends BaseAdapter {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 final Intent previewIntent = new Intent(mContext.getResources().getString(R.string.preview_activity));
-                previewIntent.putExtra("flickrImageId", mImageFlickrIds.get(position));
+                previewIntent.putExtra(mContext.getString(R.string.extra_flickr_image_id), mImageFlickrIds.get(position));
 
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
-                    mAnimationController.transition(layout, "transition_image", previewIntent);
+                    mAnimationController.transition(layout, mContext.getString(R.string.transition_image), previewIntent);
                 } else{
                     mAnimationController.zoomCenter(layout, previewIntent);
                 }

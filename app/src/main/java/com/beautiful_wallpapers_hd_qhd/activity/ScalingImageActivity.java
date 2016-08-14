@@ -58,7 +58,7 @@ public class ScalingImageActivity extends Activity implements CompoundButton.OnC
 
         mSwitch.setOnCheckedChangeListener(this);
 
-        mFlickrImageId = getIntent().getStringExtra("flickrImageId");
+        mFlickrImageId = getIntent().getStringExtra(getString(R.string.extra_flickr_image_id));
         mImageLoader.displayImage(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, mFlickrImageId), mImageView);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
