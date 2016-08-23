@@ -192,7 +192,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                System.out.println(distanceX + "| " + e1.getX() + " = " + e2.getX() + " | " + (e2.getX() - e1.getX()));
                 float path = e2.getX() - e1.getX();
                 if(path > ALLOWED_PATH){
                     onSwipeRight();

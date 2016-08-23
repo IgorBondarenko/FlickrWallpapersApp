@@ -25,7 +25,7 @@ public class InformationCardDialog extends AppCompatActivity implements OnClickL
     public static final int IMAGE_INFORMATION = 1;
 
     @BindView(R.id.inform_card_title) TextView mTitleTextView;
-    @BindView(R.id.information_lw) ListView mListView;
+    @BindView(R.id.information_lv) ListView mListView;
     private ListViewHelper listViewHelper;
 
     @Override

@@ -12,6 +12,7 @@ public class SharedPreferencesController {
     public static final String SP_WUS_STATE = "WALLPAPERS_UPDATE_SERVICE_STATE";
     public static final String SP_WUS_COUNT = "WUS_COUNT";
     public static final String SP_IS_FIRST_TIME = "is_first_time";
+    public static final String SP_IS_FIRST_TIME_FAV = "is_first_time";
     public static final String SP_PRO_VERSION = "pro";
     public static final String SP_START_CATEGORY = "start_category";
     public static final String SP_NEW_MESSAGE = "new_message";

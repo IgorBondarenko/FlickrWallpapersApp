@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -36,6 +37,11 @@ public class AuthorWebProfileActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         mBrowser.getSettings().setJavaScriptEnabled(true);
+
+        mBrowser.getSettings().setBuiltInZoomControls(true);
+        mBrowser.getSettings().setUseWideViewPort(true);
+        mBrowser.setInitialScale(1);
+
         mBrowser.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -55,9 +61,10 @@ public class AuthorWebProfileActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         if(mBrowser.canGoBack()){
             mBrowser.goBack();
+        } else {
+            super.onBackPressed();
         }
     }
 

@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -23,10 +24,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -362,6 +365,14 @@ public class MainActivity extends AppCompatActivity
                 initImageAdapter(flickrImageIds, "favourite");
                 mProgressBar.setVisibility(View.GONE);
                 saveCurrent(R.id.nav_category_fav, R.string.title_section3);
+                startHandler(() -> {
+                    if(sPref.getBool(SharedPreferencesController.SP_IS_FIRST_TIME_FAV, true)){
+                        if(mCurrentSelectedPosition == R.id.nav_category_fav){
+                            //sPref.setBool(SharedPreferencesController.SP_IS_FIRST_TIME_FAV, false);
+                            startActivity(getSwipeIntent("com.beautiful_wallpapers_hd_qhd.SWIPE_LEFT", getFirstItemX(), getFirstItemY()));
+                        }
+                    }
+                });
                 break;
             case R.id.nav_category_subscriptions:
                 mProgressBar.setVisibility(View.GONE);
@@ -451,17 +462,45 @@ public class MainActivity extends AppCompatActivity
         mImageAdapter.notifyDataSetChanged();
         observable
                 .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> { mProgressBar.setVisibility(View.GONE); mImageAdapter.notifyDataSetChanged(); })
+                .doOnCompleted(() -> {
+                    mProgressBar.setVisibility(View.GONE); mImageAdapter.notifyDataSetChanged();
+                    startHandler(() -> {
+                        if(sPref.getBool(SharedPreferencesController.SP_IS_FIRST_TIME, true)){
+                            if(mCurrentSelectedPosition != R.id.nav_category_fav){
+                                //sPref.setBool(SharedPreferencesController.SP_IS_FIRST_TIME, false);
+                                startActivity(getSwipeIntent("com.beautiful_wallpapers_hd_qhd.SWIPE_RIGHT", getFirstItemX(), getFirstItemY()));
+                            }
+                        }
+                    });
+                })
                 .map(photosObject -> photosObject.getPhotos().getPhoto())
                 .flatMap(photos -> Observable.from(photos))
                 .subscribe(
-                        photo -> flickrImageIds.add(photo.getId()),
+                        photo ->
+                            flickrImageIds.add(photo.getId()),
                         e -> {
+                            Log.d("myLog", e.fillInStackTrace().toString());
                             mProgressBar.setVisibility(View.GONE);
                             Snackbar
                                 .make(findViewById(android.R.id.content), R.string.no_internet_connection, Snackbar.LENGTH_INDEFINITE)
                                 .setAction(R.string.action_try_again, v -> {mProgressBar.setVisibility(View.VISIBLE); updateAdapter(observable);}).show();}
                 );
+    }
+
+    private Intent getSwipeIntent(String intentName, float x, float y){
+        return new Intent(intentName).putExtra("swipe_x", x).putExtra("swipe_y", y);
+    }
+
+    private float getFirstItemX(){
+        return mGridViewImages.findViewHolderForAdapterPosition(0).itemView.getWidth() / 4;
+    }
+
+    private float getFirstItemY(){
+        return (float) (mGridViewImages.findViewHolderForAdapterPosition(0).itemView.getY() + mGridViewImages.findViewHolderForAdapterPosition(0).itemView.getHeight() / 1.5);
+    }
+
+    private void startHandler(Runnable runnable){
+        new Handler().postDelayed(runnable, 1000);
     }
 
     private void showToast(String message){

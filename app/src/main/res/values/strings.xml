@@ -211,5 +211,8 @@
     <string name="delete_old_version_activity" translatable="false">com.wallpapers_hd_qhd.DELETE_OLD_VERSION_ACTIVITY</string>
 
     <string name="flickr_author_page_url" translatable="false"><a href="">http://flickr.com/%1$s</a></string>
+    <string name="tutorial_swipe_left">Just swipe left to remove image</string>
+    <string name="tutorial_swipe_right">Instantly add image to Favourites folder by swiping right on it</string>
+    <string name="tutorial_got_it_btn">got it</string>
 
 </resources>

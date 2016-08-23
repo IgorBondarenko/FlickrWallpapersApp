@@ -53,7 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/list_height"
                     android:fadeScrollbars="false"
-                    android:id="@+id/information_lw"
+                    android:id="@+id/information_lv"
                     android:scrollbars="none"
                     android:divider="@color/bright_foreground_disabled_material_light"
                     android:dividerHeight="0.5dp"

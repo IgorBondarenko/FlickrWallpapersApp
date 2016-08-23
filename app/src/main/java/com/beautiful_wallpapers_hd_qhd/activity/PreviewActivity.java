@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -362,7 +363,8 @@ public class PreviewActivity extends AppCompatActivity {
             final View rootView = inflater.inflate(R.layout.content_card_preview, container, false);
 
             final TextView textView = (TextView) rootView.findViewById(R.id.inform_card_title);
-            final ListView listView = (ListView) rootView.findViewById(R.id.information_lw);
+            final ListView listView = (ListView) rootView.findViewById(R.id.information_lv);
+            listView.setScrollContainer(false);
 
             final RelativeLayout viewMore = (RelativeLayout) rootView.findViewById(R.id.view_more_info);
 

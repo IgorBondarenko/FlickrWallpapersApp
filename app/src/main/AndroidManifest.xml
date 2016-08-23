@@ -121,6 +121,24 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.SwipeRightTutorialActivity"
+            android:theme="@style/CardDialog">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.SWIPE_RIGHT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.SwipeLeftTutorialActivity"
+            android:theme="@style/CardDialog">
+            <intent-filter>
+                <action android:name="com.beautiful_wallpapers_hd_qhd.SWIPE_LEFT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <!-- receivers -->
         <receiver android:name=".core.receiver.notification.NotificationReceiver" >
         </receiver>

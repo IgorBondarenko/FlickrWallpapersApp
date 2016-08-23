@@ -111,13 +111,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_action_full_screen"
-        android:visibility="invisible"
+        android:visibility="gone"
 
         app:layout_behavior="com.beautiful_wallpapers_hd_qhd.core.view.FabBehavior"
         app:useCompatPadding="true"
         app:layout_anchor="@id/preview_iv"
         app:layout_anchorGravity="bottom|end" />
-
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
