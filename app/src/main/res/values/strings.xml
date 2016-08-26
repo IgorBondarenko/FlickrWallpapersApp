@@ -149,7 +149,7 @@
     <string name="image_quality_high">High image quality</string>
 
     <!-- facebook-->
-    <string name="app_id" translatable="false">388087941388995</string>
+    <string name="facebook_app_id" translatable="false">373019949564584</string>
 
     <!--advertisment's ids-->
     <string name="main_activity_banner" translatable="false">ca-app-pub-8347960194719275/1381303942</string>

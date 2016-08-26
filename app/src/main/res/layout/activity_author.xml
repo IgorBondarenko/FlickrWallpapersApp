@@ -11,7 +11,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="216dp"
+        android:layout_height="@dimen/app_bar_height"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -21,13 +21,13 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             android:background="@android:color/white"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <LinearLayout
                 android:id="@+id/circular_reveal_background"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="216dp"
+                android:layout_height="@dimen/app_bar_height"
                 android:background="@color/colorPrimary"
                 android:visibility="invisible"
                 android:fitsSystemWindows="true"
@@ -114,12 +114,13 @@
         android:layout_height="?attr/actionBarSize"
         android:elevation="10dp"
         android:layout_gravity="center|top"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="152dp"
         android:gravity="center"
         android:text="Name Surname\n[nickname]"
         android:textColor="@android:color/white"
         android:paddingLeft="?attr/actionBarSize"
         android:paddingRight="?attr/actionBarSize"
+        android:maxLines="2"
 
         app:layout_behavior="com.zoonref.SimpleViewBehavior"
         app:dependsOn="@+id/app_bar"
@@ -127,6 +128,7 @@
         app:dependTargetY="@dimen/app_bar_height_half_negative"
         app:targetX="@dimen/app_bar_targetX"
         app:targetY="@dimen/app_bar_targetY"
+
         android:id="@+id/profile_name"
         android:textStyle="bold"
         android:textSize="20sp" />

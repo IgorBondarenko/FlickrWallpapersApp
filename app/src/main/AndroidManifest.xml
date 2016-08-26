@@ -30,6 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.PreviewActivity"
             android:label="Preview"
@@ -41,6 +42,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.AuthorWebProfileActivity"
             android:label="Author Profile"
@@ -51,6 +53,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.AuthorPageActivity"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -60,6 +63,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.dialog.InformationCardDialog"
             android:theme="@style/CardDialog" >
@@ -69,6 +73,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity android:name=".activity.ScalingImageActivity" >
             <intent-filter>
                 <action android:name="com.beautiful_wallpapers_hd_qhd.SCALING_IMAGE_ACTIVITY" />
@@ -76,6 +81,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity android:name=".activity.CropImageActivity" >
             <intent-filter>
                 <action android:name="com.beautiful_wallpapers_hd_qhd.CROP_IMAGE_ACTIVITY" />
@@ -83,6 +89,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.dialog.ExitDialog"
             android:label="@string/want_exit"
@@ -93,30 +100,30 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.dialog.AutoUpdateDialog"
             android:label="@string/action_set_auto_update"
             android:theme="@style/Theme.AppCompat.Light.Dialog" >
             <intent-filter>
                 <action android:name="com.beautiful_wallpapers_hd_qhd.AUTO_UPDATE_DIALOG" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.dialog.BuyProDialog"
             android:label="@string/action_buy_pro"
             android:theme="@style/Theme.AppCompat.Light.Dialog" >
             <intent-filter>
                 <action android:name="com.beautiful_wallpapers_hd_qhd.BUY_PRO_DIALOG" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity android:name=".activity.dialog.LoginActivity" >
             <intent-filter>
                 <action android:name="com.beautiful_wallpapers_hd_qhd.LOGIN_DIALOG" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -140,19 +147,24 @@
         </activity>
 
         <!-- receivers -->
-        <receiver android:name=".core.receiver.notification.NotificationReceiver" >
+        <receiver
+            android:name=".core.receiver.notification.NotificationReceiver" >
         </receiver>
+
         <receiver android:name=".core.receiver.notification.NotificationOnBootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <receiver android:name=".core.receiver.updater.UpdateWallpapersOnBootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".core.receiver.updater.UpdateWallpapersReceiver" >
+
+        <receiver
+            android:name=".core.receiver.updater.UpdateWallpapersReceiver" >
         </receiver>
 
         <!-- services -->
@@ -169,6 +181,12 @@
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
+
+        <!--facebook-->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+
     </application>
 
 </manifest>

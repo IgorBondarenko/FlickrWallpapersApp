@@ -36,7 +36,7 @@ android {
     }
     defaultConfig {
         applicationId "com.beautiful_wallpapers_hd_qhd"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -92,6 +92,7 @@ dependencies {
     compile 'cz.msebera.android:httpclient:4.4.1.1'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.etsy.android.grid:library:1.0.5'
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 }
 
 apply plugin: 'com.google.gms.google-services'

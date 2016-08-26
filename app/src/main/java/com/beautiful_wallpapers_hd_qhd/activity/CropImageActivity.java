@@ -2,11 +2,11 @@ package com.beautiful_wallpapers_hd_qhd.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +63,7 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
     @BindView(R.id.no_crop_cb) CheckBox mNoCropCheckBox;
     @BindView(R.id.width_seekBar) SeekBar mWidthSeekBar;
     @BindView(R.id.height_seekBar) SeekBar mHeightSeekBar;
-    @BindView(R.id.switch1) Switch mSwitcher;
+    @BindView(R.id.switch1) Switch mStableSwitcher;
 
     @Inject FlickrDatabase flickrDB;
     private String mFlickrImageId;
@@ -88,20 +88,20 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
         mFlickrImageId = getIntent().getStringExtra(getString(R.string.extra_flickr_image_id));
         mFlickrImageUrl = flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, mFlickrImageId);
 
-        mSwitcher.setOnCheckedChangeListener(this);
+        mStableSwitcher.setOnCheckedChangeListener(this);
 
         try{
             mImage = imageLoader.loadImageSync(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, mFlickrImageId));
             setupLayout();
             if(!new Device(this).isTablet()){
                 if(mImage.getWidth() < mImage.getHeight()){
-                    mSwitcher.setChecked(true);
+                    mStableSwitcher.setChecked(true);
                     setPortraitAspectRatio();
                 } else{
                     setLandscapeAspectRatio();
                 }
             } else{
-                mSwitcher.setEnabled(false);
+                mStableSwitcher.setEnabled(false);
                 setTabletAspectRatio();
             }
         } catch (NullPointerException e){
@@ -126,10 +126,10 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
 
     private void setPortraitAspectRatio(){
         double param = (double)mDisplayMetrics.widthPixels / (double)mDisplayMetrics.heightPixels;
-
         for (ImageSizes size : ImageSizes.values()) {
             if(param > (size.getRatio() - 0.01) && param < (size.getRatio() + 0.01)) {
                 setAspectRatio(size.getWidth(), size.getHeight());
+                break;
             }
         }
     }
@@ -139,18 +139,23 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
         for (ImageSizes size : ImageSizes.values()) {
             if(param > (size.getRatio() - 0.01) && param < (size.getRatio() + 0.01)) {
                 setAspectRatio(size.getHeight(), size.getWidth());
+                break;
             }
         }
     }
 
     private void setLandscapeAspectRatio(){
-        setAspectRatio(mWidth, mHeight);
+        setAspectRatio(mWidth = 5, mHeight = 4);
     }
 
     private void setAspectRatio(int v1, int v2){
+
         mWidthTextView.setText(String.valueOf(v1));
         mHeightTextView.setText(String.valueOf(v2));
         mCropImageView.setAspectRatio(v1, v2);
+
+        mWidthSeekBar.setProgress(v1);
+        mHeightSeekBar.setProgress(v2);
     }
 
     private void setupLayout(){
@@ -246,8 +251,8 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
                 break;
             case R.id.no_crop_cb:
                 isCrop = !isChecked;
-                mSwitcher.setChecked(false);
-                mSwitcher.setEnabled(!isChecked);
+                mStableSwitcher.setChecked(false);
+                mStableSwitcher.setEnabled(!isChecked);
 
                 mWidthSeekBar.setEnabled(!isChecked);
                 mHeightSeekBar.setEnabled(!isChecked);
@@ -257,6 +262,7 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
                 if(isChecked){
                     setPortraitAspectRatio();
                 } else {
+                    Log.d("myLog", "LANDSCAPE");
                     setLandscapeAspectRatio();
                 }
                 break;
@@ -270,9 +276,10 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
     }
 
     private enum ImageSizes{
-        SIZE_9X16(9, 16), SIZE_5X16(5, 16), SIZE_3X4(3, 4), SIZE_10X16(10, 16), SIZE_16X25(16, 25);
-        int width;
-        int height;
+        SIZE_9X16(9, 16), SIZE_9X15(9, 15), SIZE_5X16(5, 16), SIZE_3X4(3, 4), SIZE_10X16(10, 16), SIZE_16X25(16, 25);
+
+        private int width;
+        private int height;
 
         ImageSizes(int width, int height){
             this.width = width;
@@ -280,7 +287,7 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
         }
 
         public double getRatio(){
-            return width / height;
+            return (double)width / (double)height;
         }
 
         public int getWidth() {
