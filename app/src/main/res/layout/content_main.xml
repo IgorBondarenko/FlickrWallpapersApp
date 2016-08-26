@@ -18,18 +18,6 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <!--<com.etsy.android.grid.StaggeredGridView-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-        <!--android:id="@+id/grid_view_authors1"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:item_margin="8dp"-->
-        <!--app:column_count="@integer/columns"-->
-        <!--android:scrollingCache="true"-->
-        <!--android:smoothScrollbar="true"-->
-        <!--android:visibility="gone" />-->
-
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -64,6 +52,77 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         android:layout_alignParentBottom="true">
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/empty_subscriptions"
+        android:gravity="center_horizontal"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="48dp"
+        android:layout_marginRight="48dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageView4"
+            android:src="@drawable/ic_large_subscriptions_grey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="There are no subscribed authors"
+            android:gravity="center"
+            android:id="@+id/textView7" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="To subscribe on author go to image preview window, press \'see other photos\' and subscribe on it"
+            android:gravity="center"
+            android:id="@+id/textView8"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/empty_favourite_folder"
+        android:gravity="center_horizontal"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="48dp"
+        android:layout_marginRight="48dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageView3"
+            android:src="@drawable/ic_large_star_grey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="There are no favourite images"
+            android:gravity="center"
+            android:id="@+id/textView5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/tutorial_swipe_right"
+            android:gravity="center"
+            android:id="@+id/textView6"
+            android:layout_marginTop="8dp" />
+
     </LinearLayout>
 
 </RelativeLayout>

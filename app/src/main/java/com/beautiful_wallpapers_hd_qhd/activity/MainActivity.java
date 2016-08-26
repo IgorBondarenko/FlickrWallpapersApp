@@ -29,7 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -87,6 +87,10 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.authors_grid_view) GridView mGridViewAuthors;
     @BindView(R.id.progressBar) ProgressBar mProgressBar;
     @BindView(R.id.nav_view) NavigationView mNavigationView;
+
+    @BindView(R.id.empty_favourite_folder) LinearLayout mNoFavourites;
+    @BindView(R.id.empty_subscriptions) LinearLayout mNoSubscriptions;
+
 
     private ImageRecyclerAdapter mImageAdapter;
     private String mAccountEmail;
@@ -159,6 +163,7 @@ public class MainActivity extends AppCompatActivity
                     flickrDB.removeFavourite(flickrImageIds.get(viewHolder.getLayoutPosition()), FlickrDatabase.FAVOURITE_PHOTO);
                     mImageAdapter.notifyItemRemoved(viewHolder.getLayoutPosition());
                     flickrImageIds.remove(viewHolder.getLayoutPosition());
+                    showFavouriteHint();
                     Toast.makeText(MainActivity.this, R.string.preview_remove_from_favourite, Toast.LENGTH_LONG).show();
                 }
             }
@@ -277,6 +282,10 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    private void showFavouriteHint(){
+        if(flickrImageIds.size() == 0) { mNoFavourites.setVisibility(View.VISIBLE); }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -365,9 +374,10 @@ public class MainActivity extends AppCompatActivity
                 initImageAdapter(flickrImageIds, "favourite");
                 mProgressBar.setVisibility(View.GONE);
                 saveCurrent(R.id.nav_category_fav, R.string.title_section3);
+                showFavouriteHint();
                 startHandler(() -> {
                     if(sPref.getBool(SharedPreferencesController.SP_IS_FIRST_TIME_FAV, true)){
-                        if(mCurrentSelectedPosition == R.id.nav_category_fav){
+                        if(flickrImageIds.size() != 0 && mCurrentSelectedPosition == R.id.nav_category_fav){
                             //sPref.setBool(SharedPreferencesController.SP_IS_FIRST_TIME_FAV, false);
                             startActivity(getSwipeIntent("com.beautiful_wallpapers_hd_qhd.SWIPE_LEFT", getFirstItemX(), getFirstItemY()));
                         }
@@ -391,6 +401,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
                 saveCurrent(R.id.nav_category_subscriptions, R.string.title_section23);
+                if(flickrAuthorIds.size() == 0) { mNoSubscriptions.setVisibility(View.VISIBLE); }
                 break;
             case R.id.nav_category_landscape:
                 initImageAdapter(flickrImageIds, "landscape");
@@ -442,6 +453,8 @@ public class MainActivity extends AppCompatActivity
         initSwipe(position != R.id.nav_category_fav ?ItemTouchHelper.RIGHT : ItemTouchHelper.LEFT);
         mTitle = titleRes;
         setTitle(mTitle);
+        mNoFavourites.setVisibility(View.GONE);
+        mNoSubscriptions.setVisibility(View.GONE);
     }
 
     private void initImageAdapter(List<String> imagesId, String category){
