@@ -125,8 +125,7 @@ public class PreviewActivity extends AppCompatActivity {
         loadTags();
 
         if(!(isProVersion = sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false))){
-            mAdvertising.showStub(R.id.preview_ad_stub);
-            mAdvertising.loadSmartBanner(R.id.preview_ad_view);
+            mAdvertising.loadSmartBanner(R.id.preview_ad_stub, R.id.preview_ad_view);
         }
 
         mScaleFAB.setOnClickListener(view -> {
@@ -226,12 +225,17 @@ public class PreviewActivity extends AppCompatActivity {
         View.OnClickListener ocl = v -> {
             switch (v.getId()){
                 case R.id.set_as_btn:
-                    Log.d("MyLog", "CROP");
                     Intent cropImageIntent = new Intent(getResources().getString(R.string.crop_image_activity));
                     cropImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrImageId);
-                    Pair<View, String> p1 = Pair.create((View) mImageView, getString(R.string.transition_image));
-                    Pair<View, String> p2 = Pair.create((View) mScaleFAB, getString(R.string.transition_button));
-                    mAnimationController.transition(cropImageIntent, p1, p2);
+
+                    if(mScaleFAB.getVisibility() != View.INVISIBLE){
+                        Pair<View, String> p1 = Pair.create((View) mImageView, getString(R.string.transition_image));
+                        Pair<View, String> p2 = Pair.create((View) mScaleFAB, getString(R.string.transition_button));
+                        mAnimationController.transition(cropImageIntent, p1, p2);
+                    } else {
+                        startActivity(cropImageIntent);
+                    }
+
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                     //analytics.registerEvent("Preview", Analytics.BUTTON_PRESSED, "set as", 0);
                     break;
@@ -389,11 +393,6 @@ public class PreviewActivity extends AppCompatActivity {
                                             } else {
                                                 flickrDB.updateAuthor(author);
                                             }
-
-                                            /*if(flickrDB.getAuthor(nsid) == null){
-                                                author.setUserAvatar(Integer.valueOf(iconserver) == 0 ? null : FlickrHelper.getUserAvatar(iconfarm, iconserver, nsid));
-                                                flickrDB.addAuthor(author);
-                                            }*/
                                         });
                                 return author;
                             })

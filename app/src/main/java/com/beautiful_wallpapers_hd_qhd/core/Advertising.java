@@ -46,6 +46,11 @@ public class Advertising {
         adView.loadAd(adRequest);
     }
 
+    public void loadSmartBanner(int stubId, int resId){
+        showStub(stubId);
+        ((AdView)((Activity) mContext).findViewById(resId)).loadAd(adRequest);
+    }
+
     public void loadSmartBanner(int resId){
         ((AdView)((Activity) mContext).findViewById(resId)).loadAd(adRequest);
     }

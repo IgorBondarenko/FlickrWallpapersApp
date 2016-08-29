@@ -83,23 +83,21 @@ public class MainActivity extends AppCompatActivity
     private List<String> flickrImageIds = new ArrayList<>();
     private List<String> flickrAuthorIds = new ArrayList<>();
 
-    @BindView(R.id.images_grid_view) RecyclerView mGridViewImages;
-    @BindView(R.id.authors_grid_view) GridView mGridViewAuthors;
-    @BindView(R.id.progressBar) ProgressBar mProgressBar;
-    @BindView(R.id.nav_view) NavigationView mNavigationView;
-
-    @BindView(R.id.empty_favourite_folder) LinearLayout mNoFavourites;
-    @BindView(R.id.empty_subscriptions) LinearLayout mNoSubscriptions;
-
-
-    private ImageRecyclerAdapter mImageAdapter;
-    private String mAccountEmail;
-
     @Inject AnimationController animationController;
     @Inject SharedPreferencesController sPref;
     @Inject FlickrDatabase flickrDB;
     @Inject OpenIabHelper mHelper;
     @Inject FlickrAPI flickrAPI;
+
+    @BindView(R.id.images_grid_view) RecyclerView mGridViewImages;
+    @BindView(R.id.authors_grid_view) GridView mGridViewAuthors;
+    @BindView(R.id.progressBar) ProgressBar mProgressBar;
+    @BindView(R.id.nav_view) NavigationView mNavigationView;
+    @BindView(R.id.empty_favourite_folder) LinearLayout mNoFavourites;
+    @BindView(R.id.empty_subscriptions) LinearLayout mNoSubscriptions;
+
+    private ImageRecyclerAdapter mImageAdapter;
+    private String mAccountEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +115,6 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        //final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
         new NotificationReceiver().start(this);
@@ -129,17 +126,13 @@ public class MainActivity extends AppCompatActivity
             setTitle("#"+tag);
             initSwipe(ItemTouchHelper.RIGHT);
         } else {
-            if(mTitle != 0){
-                setTitle(mTitle);
-            }
+            if(mTitle != 0) setTitle(mTitle);
             mNavigationView.getMenu().findItem(mCurrentSelectedPosition).setChecked(true);
             onNavigationItemSelected(mNavigationView.getMenu().findItem(mCurrentSelectedPosition));
         }
 
         if(!(isProActivated = sPref.getBool(SharedPreferencesController.SP_PRO_VERSION, false))){
-            Advertising advertising = new Advertising(this);
-            advertising.showStub(R.id.main_ad_stub);
-            advertising.loadSmartBanner(R.id.main_ad_view);
+            new Advertising(this).loadSmartBanner(R.id.main_ad_stub, R.id.main_ad_view);
         }
     }
 
@@ -382,7 +375,7 @@ public class MainActivity extends AppCompatActivity
                             startActivity(getSwipeIntent("com.beautiful_wallpapers_hd_qhd.SWIPE_LEFT", getFirstItemX(), getFirstItemY()));
                         }
                     }
-                });
+                }, 2000);
                 break;
             case R.id.nav_category_subscriptions:
                 mProgressBar.setVisibility(View.GONE);
@@ -484,7 +477,7 @@ public class MainActivity extends AppCompatActivity
                                 startActivity(getSwipeIntent("com.beautiful_wallpapers_hd_qhd.SWIPE_RIGHT", getFirstItemX(), getFirstItemY()));
                             }
                         }
-                    });
+                    }, 1000);
                 })
                 .map(photosObject -> photosObject.getPhotos().getPhoto())
                 .flatMap(photos -> Observable.from(photos))
@@ -512,8 +505,8 @@ public class MainActivity extends AppCompatActivity
         return (float) (mGridViewImages.findViewHolderForAdapterPosition(0).itemView.getY() + mGridViewImages.findViewHolderForAdapterPosition(0).itemView.getHeight() / 1.5);
     }
 
-    private void startHandler(Runnable runnable){
-        new Handler().postDelayed(runnable, 1000);
+    private void startHandler(Runnable runnable, long delay){
+        new Handler().postDelayed(runnable, delay);
     }
 
     private void showToast(String message){

@@ -48,8 +48,9 @@ public class CropImageActivity extends ActionBarActivity implements SeekBar.OnSe
     //private Analytics analytics = test_new Analytics(this);
     private ImageLoader imageLoader = ImageLoader.getInstance();
 
-    private WallpaperInstaller mWallpaperInstaller;
     @Inject DisplayMetrics mDisplayMetrics;
+
+    private WallpaperInstaller mWallpaperInstaller;
     private Thread setWallpaperThread;
 
     private int mWidth = 5;

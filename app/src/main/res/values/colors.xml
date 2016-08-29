@@ -10,4 +10,5 @@
     <color name="buttonGrey">#ff747474</color>
     <color name="cardHeaderColor">#465b65</color>
     <color name="itemPressed">#eeeeee</color>
+    <color name="light_gray">#ddd</color>
 </resources>

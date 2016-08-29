@@ -124,6 +124,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
         return new DisplayImageOptions.Builder()
                 .cacheOnDisk(true)
                 .showImageOnLoading(ratio == 0 ? R.drawable.background : ratio > 1 ? R.drawable.background_portrait : R.drawable.background_land)
+                //.showImageOnLoading(R.color.light_gray)
                 .imageScaleType(ImageScaleType.NONE)
                 .build();
     }
@@ -162,124 +163,5 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
             }
         });
-    }
-
-    private void touchEventsProcessing(final View layout, final ImageView favouriteImage, final int position){
-
-        final GestureDetector detector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
-
-            private static final float ALLOWED_PATH = 200;
-
-            @Override
-            public boolean onDown(MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent e) {}
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                final Intent previewIntent = new Intent(mContext.getResources().getString(R.string.preview_activity));
-                previewIntent.putExtra(mContext.getString(R.string.extra_flickr_image_id), mImageFlickrIds.get(position));
-
-                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
-                    mAnimationController.transition(layout, mContext.getString(R.string.transition_image), previewIntent);
-                } else{
-                    mAnimationController.zoomCenter(layout, previewIntent);
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                float path = e2.getX() - e1.getX();
-                if(path > ALLOWED_PATH){
-                    onSwipeRight();
-                    return true;
-                } else if(path < -ALLOWED_PATH){
-                    onSwipeLeft();
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {}
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                return false;
-            }
-
-            private void onSwipeRight() {
-//                test_new Analytics(mContext).registerEvent("Gallery", Analytics.SWIPE, "right"+dao.getStringValueByURL(url, "category") + "_category_id-" +  dao.getIntegerValueByURL(url, "cat_index"), 0);
-
-                if(!mCategory.equals("favourite")){
-                    if(!flickrDB.isFavourite(mImageFlickrIds.get(position), FlickrDatabase.FAVOURITE_PHOTO)){
-                        Animation.AnimationListener animationListener = new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                Toast.makeText(mContext, R.string.preview_add_to_favourite, Toast.LENGTH_LONG).show();
-                                flickrDB.addFavourite(mImageFlickrIds.get(position), FlickrDatabase.FAVOURITE_PHOTO);
-                                favouriteImage.setVisibility(View.VISIBLE);
-                                favouriteImage.startAnimation(mAnimationController.getAnimation(R.anim.zoom_grid_elem));
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-
-                            }
-                        };
-                        layout.startAnimation(mAnimationController.getAnimation(R.anim.slide_out_right, animationListener));
-                    } else {
-                        layout.startAnimation(mAnimationController.getAnimation(R.anim.already_added));
-                    }
-                }
-            }
-
-            private void onSwipeLeft(){
-//                test_new Analytics(mContext).registerEvent("Gallery", Analytics.SWIPE, "left", 0);
-
-                if(mCategory.equals("favourite")){
-                    Animation.AnimationListener animationListener = new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            Toast.makeText(mContext, R.string.preview_remove_from_favourite, Toast.LENGTH_LONG).show();
-                            flickrDB.removeFavourite(mImageFlickrIds.get(position), FlickrDatabase.FAVOURITE_PHOTO);
-                            mImageFlickrIds.remove(position);
-                            sPositionHeightRatios.clear();
-                            notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
-                        }
-                    };
-                    layout.startAnimation(mAnimationController.getAnimation(R.anim.slide_out_left, animationListener));
-                }
-            }
-
-        });
-
-        layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                detector.onTouchEvent(event);
-                return true;
-            }
-        });
-
     }
 }
