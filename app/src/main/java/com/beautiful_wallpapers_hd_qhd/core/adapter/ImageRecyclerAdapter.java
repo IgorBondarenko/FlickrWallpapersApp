@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -81,25 +82,26 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
     @Override
     public void onBindViewHolder(final ImageViewHolder holder, final int position) {
-        holder.thumbnailImage.setHeightRatio(getPositionRatio(holder.getLayoutPosition()));
+        holder.thumbnailImage.setHeightRatio(getPositionRatio(position));
 
-        Observable.just(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mImageFlickrIds.get(holder.getLayoutPosition())))
+        Observable.just(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mImageFlickrIds.get(position)))
                 .subscribe(url -> {
                     if(url != null){
-                        loadImage(url, holder.thumbnailImage, holder.itemView, holder.favouriteImage, holder.getLayoutPosition());
+                        loadImage(url, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
                     } else {
-                        flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mImageFlickrIds.get(holder.getLayoutPosition()))
+                        flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mImageFlickrIds.get(position))
                                 .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                                 .map(photoSizes -> photoSizes.getSizes().getSizesArray().get(FlickrHelper.SIZE_THUMBNAIL).getSize())
                                 .subscribe(thumbUrl -> {
-                                    flickrDB.addPhoto(mImageFlickrIds.get(holder.getLayoutPosition()), FlickrDataBaseHelper.TABLE_THUMB_SIZE, thumbUrl);
-                                    loadImage(thumbUrl, holder.thumbnailImage, holder.itemView, holder.favouriteImage, holder.getLayoutPosition());
+                                    Log.d("myLog", "holder="+holder.getLayoutPosition() + "pos="+position);
+                                    flickrDB.addPhoto(mImageFlickrIds.get(position), FlickrDataBaseHelper.TABLE_THUMB_SIZE, thumbUrl);
+                                    loadImage(thumbUrl, holder.thumbnailImage, holder.itemView, holder.favouriteImage, position);
                                 });
                     }
                 });
         holder.itemView.setOnClickListener(v -> {
             final Intent previewIntent = new Intent(mContext.getResources().getString(R.string.preview_activity));
-            previewIntent.putExtra(mContext.getString(R.string.extra_flickr_image_id), mImageFlickrIds.get(holder.getLayoutPosition()));
+            previewIntent.putExtra(mContext.getString(R.string.extra_flickr_image_id), mImageFlickrIds.get(position));
 
             if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
                 mAnimationController.transition(holder.thumbnailImage, mContext.getString(R.string.transition_image), previewIntent);

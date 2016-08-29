@@ -2,6 +2,7 @@ package com.beautiful_wallpapers_hd_qhd.core;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.beautiful_wallpapers_hd_qhd.core.billing.InAppConfig;
 import com.beautiful_wallpapers_hd_qhd.core.di.AppComponent;
@@ -16,11 +17,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
  */
 public class WallpapersApplication extends Application {
 
-    public static AppComponent component;
-    public static AppComponent getComponent() {
-        return component;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -30,13 +26,12 @@ public class WallpapersApplication extends Application {
                 .build();
         ImageLoader.getInstance().init(config);
         InAppConfig.init();
-        //component = buildComponent();
         FacebookSdk.sdkInitialize(getApplicationContext());
     }
 
-    protected AppComponent buildComponent() {
-        return DaggerAppComponent.builder()
-                .myModule(new MyModule(this))
-                .build();
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }
