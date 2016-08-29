@@ -5,14 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.core.Advertising;
 import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesController;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrHelper;
 import com.google.android.gms.ads.AdView;
 
 import butterknife.BindView;

@@ -2,4 +2,7 @@
 <resources>
     <dimen name="dialog_card_margin_horizontal">56dp</dimen>
     <dimen name="dialog_card_margin_vertical">56dp</dimen>
+
+    <dimen name="card_margin_horizontal">16dp</dimen>
+
 </resources>

@@ -214,5 +214,7 @@
     <string name="tutorial_swipe_left">Just swipe left to remove image</string>
     <string name="tutorial_swipe_right">Instantly add image to Favourites folder by swiping right on it</string>
     <string name="tutorial_got_it_btn">got it</string>
+    <string name="zoom_low_quality">Low quality</string>
+    <string name="zoom_high_quality">High quality</string>
 
 </resources>

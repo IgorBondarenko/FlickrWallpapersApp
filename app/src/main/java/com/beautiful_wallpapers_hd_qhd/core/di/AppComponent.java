@@ -10,6 +10,7 @@ import com.beautiful_wallpapers_hd_qhd.activity.dialog.BuyProDialog;
 import com.beautiful_wallpapers_hd_qhd.core.FirebaseAnalytic;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.AuthorAdapter;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.ImageRecyclerAdapter;
+import com.beautiful_wallpapers_hd_qhd.core.service.UpdateWallpapersService;
 
 import dagger.Component;
 
@@ -30,5 +31,6 @@ public interface AppComponent {
     void inject(AuthorAdapter adapter);
     void inject(FirebaseAnalytic component);
     void inject(BuyProDialog dialog);
+    void inject(UpdateWallpapersService service);
 
 }

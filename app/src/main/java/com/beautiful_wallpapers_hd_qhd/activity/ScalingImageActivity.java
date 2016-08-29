@@ -16,12 +16,12 @@ import android.widget.Toast;
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.core.Advertising;
 import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesController;
-import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDataBaseHelper;
+import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
 import com.beautiful_wallpapers_hd_qhd.core.di.MyModule;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.RequestLoadListener;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrHelper;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrAPI;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import javax.inject.Inject;
@@ -29,6 +29,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ooo.oxo.library.widget.TouchImageView;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -37,7 +39,6 @@ import ooo.oxo.library.widget.TouchImageView;
 public class ScalingImageActivity extends Activity implements CompoundButton.OnCheckedChangeListener{
 
     private ImageLoader mImageLoader = ImageLoader.getInstance();
-    private FlickrHelper flickrHelper = new FlickrHelper();
 
     @BindView(R.id.progressBar2) ProgressBar mProgressBar;
     @BindView(R.id.scaling_image_view) TouchImageView mImageView;
@@ -45,6 +46,7 @@ public class ScalingImageActivity extends Activity implements CompoundButton.OnC
     private View mDecorView;
 
     @Inject SharedPreferencesController sPref;
+    @Inject static FlickrAPI flickrAPI;
     @Inject FlickrDatabase flickrDB;
     private String mFlickrImageId;
 
@@ -95,12 +97,7 @@ public class ScalingImageActivity extends Activity implements CompoundButton.OnC
                         return true;
                     }
                 });
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return clickDetector.onTouchEvent(motionEvent);
-            }
-        });
+        view.setOnTouchListener((view1, motionEvent) -> clickDetector.onTouchEvent(motionEvent));
     }
 
     private void hideSystemUI() {
@@ -125,10 +122,22 @@ public class ScalingImageActivity extends Activity implements CompoundButton.OnC
             final String originalImageUrl = flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_ORIGINAL_SIZE, mFlickrImageId);
             if(originalImageUrl != null){
                 mImageLoader.displayImage(originalImageUrl, mImageView);
-                showToast("High quality");
+                showToast(getString(R.string.zoom_high_quality));
             } else {
                 mProgressBar.setVisibility(View.VISIBLE);
-                flickrHelper.processRequest(FlickrHelper.METHOD_GET_PHOTO_SIZES, FlickrHelper.ARG_GET_PHOTO_ID, mFlickrImageId, new RequestLoadListener() {
+
+                flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mFlickrImageId)
+                        .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                        .map(photo -> photo.getSizes().getSizesArray().get(FlickrHelper.SIZE_ORIGINAL).getSize())
+                        .doOnCompleted(() -> {
+                            mProgressBar.setVisibility(View.GONE);
+                            showToast(getString(R.string.zoom_high_quality));})
+                        .subscribe(originalUrl -> {
+                            mImageLoader.displayImage(originalUrl, mImageView);
+                            flickrDB.addPhoto(mFlickrImageId, FlickrDataBaseHelper.TABLE_ORIGINAL_SIZE, originalUrl);
+                        });
+
+                /*flickrHelper.processRequest(FlickrHelper.METHOD_GET_PHOTO_SIZES, FlickrHelper.ARG_GET_PHOTO_ID, mFlickrImageId, new RequestLoadListener() {
                     @Override
                     public void onLoad(byte[] responseBody) {
                         String originalUrl = flickrHelper.getValue(responseBody, "sizes", "size", FlickrHelper.SIZE_ORIGINAL, "source");
@@ -142,11 +151,11 @@ public class ScalingImageActivity extends Activity implements CompoundButton.OnC
                     public void onFail(int statusCode, Throwable error) {
 
                     }
-                });
+                });*/
             }
         } else {
             mImageLoader.displayImage(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, mFlickrImageId), mImageView);
-            showToast("Low quality");
+            showToast(getString(R.string.zoom_low_quality));
         }
     }
 

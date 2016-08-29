@@ -1,6 +1,5 @@
 package com.beautiful_wallpapers_hd_qhd.core.retrofit.enteties;
 
-import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

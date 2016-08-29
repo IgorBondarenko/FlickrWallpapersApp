@@ -1,7 +1,6 @@
 package com.beautiful_wallpapers_hd_qhd.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -29,7 +28,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -51,11 +49,10 @@ import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
 import com.beautiful_wallpapers_hd_qhd.core.di.MyModule;
 import com.beautiful_wallpapers_hd_qhd.core.entity.Author;
 import com.beautiful_wallpapers_hd_qhd.core.entity.FlickrImageEXIF;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrHelper;
 import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrAPI;
 import com.beautiful_wallpapers_hd_qhd.core.view.ResizablePortraitImageView;
 import com.beautiful_wallpapers_hd_qhd.core.view.helper.ListViewHelper;
-import com.google.android.gms.ads.AdSize;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -87,8 +84,7 @@ public class PreviewActivity extends AppCompatActivity {
     @Inject static FlickrDatabase flickrDB;
     @Inject static Device mDevice;
 
-    private static String mFlickrIamgeId;
-    private static Context mContext;
+    private static String mFlickrImageId;
 
     @BindView(R.id.preview_iv) ResizablePortraitImageView mImageView;
     @BindView(R.id.buttons_panel) LinearLayout buttonsPanel;
@@ -99,10 +95,6 @@ public class PreviewActivity extends AppCompatActivity {
     @BindView(R.id.save_btn) ImageButton mSaveButton;
     @BindView(R.id.favourite_btn) ImageButton mFavouriteButton;
     @BindView(R.id.scale_image_fab) FloatingActionButton mScaleFAB;
-
-    public PreviewActivity(){
-        mContext = this;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,13 +109,13 @@ public class PreviewActivity extends AppCompatActivity {
         DaggerAppComponent.builder().myModule(new MyModule(this)).build().inject(this);
         ButterKnife.bind(this);
 
-        mFlickrIamgeId = getIntent().getStringExtra(getString(R.string.extra_flickr_image_id));
-        previewImageUrl = flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, mFlickrIamgeId);
+        mFlickrImageId = getIntent().getStringExtra(getString(R.string.extra_flickr_image_id));
+        previewImageUrl = flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, mFlickrImageId);
 
         if(previewImageUrl != null){
             loadPreviewImage(previewImageUrl);
         } else {
-            flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mFlickrIamgeId)
+            flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mFlickrImageId)
                     .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                     .map(photo -> photo.getSizes().getSizesArray().get(FlickrHelper.SIZE_LARGE).getSize())
                     .subscribe(previewUrl -> {setPreviewImageUrl(previewUrl); loadPreviewImage(previewUrl);}, e -> {finish();});
@@ -139,7 +131,7 @@ public class PreviewActivity extends AppCompatActivity {
 
         mScaleFAB.setOnClickListener(view -> {
             Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
-            scalingImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrIamgeId);
+            scalingImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrImageId);
             mAnimationController.transition(mImageView, getString(R.string.transition_image), scalingImageIntent);
         });
     }
@@ -147,7 +139,7 @@ public class PreviewActivity extends AppCompatActivity {
     private void loadTags(){
 
         TagView tagView = (TagView)findViewById(R.id.tagview);
-        flickrAPI.getPhotoInformation(FlickrHelper.METHOD_PHOTOS_GET_INFO, mFlickrIamgeId)
+        flickrAPI.getPhotoInformation(FlickrHelper.METHOD_PHOTOS_GET_INFO, mFlickrImageId)
                 .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                 .map(photoInformation -> photoInformation.getPhoto().getTags())
                 .filter(tags -> tags != null)
@@ -165,7 +157,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void setPreviewImageUrl(String url){
         this.previewImageUrl = url;
-        flickrDB.addPhoto(mFlickrIamgeId, FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, url);
+        flickrDB.addPhoto(mFlickrImageId, FlickrDataBaseHelper.TABLE_PREVIEW_SIZE, url);
     }
 
     @Override
@@ -179,7 +171,7 @@ public class PreviewActivity extends AppCompatActivity {
 
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .cacheOnDisk(true) //true
-                .showImageOnLoading(new BitmapDrawable(getResources(), mImageLoader.loadImageSync(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mFlickrIamgeId)))) //new
+                .showImageOnLoading(new BitmapDrawable(getResources(), mImageLoader.loadImageSync(flickrDB.getPhoto(FlickrDataBaseHelper.TABLE_THUMB_SIZE, mFlickrImageId)))) //new
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .build();
 
@@ -191,7 +183,7 @@ public class PreviewActivity extends AppCompatActivity {
 
                 mImageView.setOnClickListener(v -> {
                     Intent scalingImageIntent = new Intent(getString(R.string.scaling_image_activity));
-                    scalingImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrIamgeId);
+                    scalingImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrImageId);
                     mAnimationController.transition(mImageView, getString(R.string.transition_image), scalingImageIntent);
                 });
 
@@ -236,7 +228,7 @@ public class PreviewActivity extends AppCompatActivity {
                 case R.id.set_as_btn:
                     Log.d("MyLog", "CROP");
                     Intent cropImageIntent = new Intent(getResources().getString(R.string.crop_image_activity));
-                    cropImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrIamgeId);
+                    cropImageIntent.putExtra(getString(R.string.extra_flickr_image_id), mFlickrImageId);
                     Pair<View, String> p1 = Pair.create((View) mImageView, getString(R.string.transition_image));
                     Pair<View, String> p2 = Pair.create((View) mScaleFAB, getString(R.string.transition_button));
                     mAnimationController.transition(cropImageIntent, p1, p2);
@@ -255,11 +247,11 @@ public class PreviewActivity extends AppCompatActivity {
                         Animation anim = AnimationUtils.loadAnimation(getApplication(), R.anim.zoom_star);
                         mFavouriteButton.setImageResource(R.drawable.ic_action_important);
                         mFavouriteButton.startAnimation(anim);
-                        flickrDB.addFavourite(mFlickrIamgeId, FlickrDatabase.FAVOURITE_PHOTO);
+                        flickrDB.addFavourite(mFlickrImageId, FlickrDatabase.FAVOURITE_PHOTO);
                         Toast.makeText(getBaseContext(), R.string.preview_add_to_favourite, Toast.LENGTH_LONG).show();
                     } else {
                         mFavouriteButton.setImageResource(R.drawable.ic_action_not_important);
-                        flickrDB.removeFavourite(mFlickrIamgeId, FlickrDatabase.FAVOURITE_PHOTO);
+                        flickrDB.removeFavourite(mFlickrImageId, FlickrDatabase.FAVOURITE_PHOTO);
                         Toast.makeText(getBaseContext(), R.string.preview_remove_from_favourite, Toast.LENGTH_LONG).show();
                     }
                     isFavouriteImage = !isFavouriteImage;
@@ -273,14 +265,14 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void downloadImage() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale((PreviewActivity)mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    ActivityCompat.requestPermissions((PreviewActivity)mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
+            if (ContextCompat.checkSelfPermission(PreviewActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(PreviewActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    ActivityCompat.requestPermissions(PreviewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
                 } else {
-                    ActivityCompat.requestPermissions((PreviewActivity)mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
+                    ActivityCompat.requestPermissions(PreviewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
                 }
             } else {
-                mDevice.downloadImage(mContext, previewImageUrl, mFlickrIamgeId);
+                mDevice.downloadImage(PreviewActivity.this, previewImageUrl, mFlickrImageId);
             }
         }
     }
@@ -290,7 +282,7 @@ public class PreviewActivity extends AppCompatActivity {
         switch (requestCode) {
             case READ_EXTERNAL_STORAGE_PERMISSION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mDevice.downloadImage(mContext, previewImageUrl, mFlickrIamgeId);
+                    mDevice.downloadImage(PreviewActivity.this, previewImageUrl, mFlickrImageId);
                 } else {
                     Snackbar
                             .make(findViewById(android.R.id.content) ,getString(R.string.no_permission), Snackbar.LENGTH_LONG)
@@ -301,7 +293,7 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     private boolean isFavourite(ImageButton button){
-        if(flickrDB.isFavourite(mFlickrIamgeId, FlickrDatabase.FAVOURITE_PHOTO)){
+        if(flickrDB.isFavourite(mFlickrImageId, FlickrDatabase.FAVOURITE_PHOTO)){
             button.setImageResource(R.drawable.ic_action_important);
             return true;
         } else return false;
@@ -374,7 +366,7 @@ public class PreviewActivity extends AppCompatActivity {
             switch (getArguments().getInt(ARG_SECTION_NUMBER)){
                 case 1:
                     textView.setText(R.string.preview_author_label);
-                    flickrAPI.getPhotoInformation(FlickrHelper.METHOD_PHOTOS_GET_INFO, mFlickrIamgeId)
+                    flickrAPI.getPhotoInformation(FlickrHelper.METHOD_PHOTOS_GET_INFO, mFlickrImageId)
                             .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                             .map(photoInformation -> photoInformation.getPhoto())
                             .map(photo -> {
@@ -419,9 +411,9 @@ public class PreviewActivity extends AppCompatActivity {
                 case 2:
                     textView.setText(R.string.preview_image_label);
                     Observable.zip(
-                            flickrAPI.getImageEXIF(FlickrHelper.METHOD_GET_EXIF, mFlickrIamgeId)
+                            flickrAPI.getImageEXIF(FlickrHelper.METHOD_GET_EXIF, mFlickrImageId)
                                     .map(exif -> exif.getPhoto()),
-                            flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mFlickrIamgeId)
+                            flickrAPI.getPhotoSizes(FlickrHelper.METHOD_GET_PHOTO_SIZES, mFlickrImageId)
                                     .map(sizes -> sizes.getSizes().getSizesArray().get(sizes.getSizes().getSizesArray().size() - 1).getResolution()),
                             (image, resolution) -> {
                                 final FlickrImageEXIF imageData = new FlickrImageEXIF();
@@ -454,7 +446,8 @@ public class PreviewActivity extends AppCompatActivity {
                                                 viewMore.setOnClickListener(getOnClickListener(rootView, InformationCardDialog.IMAGE_INFORMATION, image));
                                             } else
                                                 viewMore.setVisibility(View.GONE);
-                                            listViewHelper.setupAdapter(image.getIcons(), image.getEXIFTitles(mContext), image.toArray(), listView);
+                                            //todo check getActivity()
+                                            listViewHelper.setupAdapter(image.getIcons(), image.getEXIFTitles(getActivity()), image.toArray(), listView);
                                         },
                                         e -> Log.d("RX-JaVa", "ERROR: "+e.fillInStackTrace())
                                 );

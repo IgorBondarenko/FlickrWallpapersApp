@@ -44,7 +44,7 @@ import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesControll
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
 import com.beautiful_wallpapers_hd_qhd.core.di.MyModule;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrHelper;
 import com.beautiful_wallpapers_hd_qhd.core.receiver.notification.NotificationReceiver;
 import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrAPI;
 import com.beautiful_wallpapers_hd_qhd.core.retrofit.enteties.PhotosObject;

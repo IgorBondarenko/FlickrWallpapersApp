@@ -22,8 +22,8 @@ import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
 import com.beautiful_wallpapers_hd_qhd.core.di.MyModule;
 import com.beautiful_wallpapers_hd_qhd.core.entity.Author;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.RequestLoadListener;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrHelper;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrAPI;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -34,6 +34,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Igor on 24.03.2016.
@@ -42,20 +45,17 @@ public class AuthorPageActivity extends AppCompatActivity implements View.OnClic
 
     private ImageLoader mImageLoader = ImageLoader.getInstance();
     private List<String> flickrImagesId = new ArrayList<>();
-    private FlickrHelper flickrHelper = new FlickrHelper();
 
     @Inject AnimationController mAnimationController;
     @Inject FlickrDatabase flickrDB;
+    @Inject FlickrAPI flickrAPI;
+
+    private ImageRecyclerAdapter mImageAdapter;
     private String mAuthorFlickrId;
     private Author mAuthor;
 
-    //@BindView(R.id.author_images_grid_view) StaggeredGridView mGridView;
     @BindView(R.id.author_images_recycler_view) RecyclerView mRecyclerView;
-
     @BindView(R.id.profile_image) CircleImageView mAuthorAvatar;
-    //private ImageAdapter mImageAdapter;
-    private ImageRecyclerAdapter mImageAdapter;
-
     @BindView(R.id.author_subscribe_btn) Button subscribeBtn;
     @BindView(R.id.author_unsubscribe_btn) Button unsubscribeBtn;
 
@@ -93,12 +93,9 @@ public class AuthorPageActivity extends AppCompatActivity implements View.OnClic
         mProfileName.setText(!mAuthor.getRealName().equals("") ? mAuthor.getRealName() +"\n" + mAuthor.getUserName() : mAuthor.getUserName());
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            circularLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
-                    mAnimationController.circularReveal(circularLayout, collapsingToolbar, R.color.colorPrimary);
-                }
+            circularLayout.post(() -> {
+                CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+                mAnimationController.circularReveal(circularLayout, collapsingToolbar, R.color.colorPrimary);
             });
 
         } else {
@@ -113,29 +110,19 @@ public class AuthorPageActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setAdapter(String userId){
-//        mImageAdapter = new ImageAdapter(this, flickrImagesId, "author_"+flickrImagesId);
         mImageAdapter = new ImageRecyclerAdapter(this, flickrImagesId, "author_"+flickrImagesId);
-
-//        mGridView.setAdapter(mImageAdapter);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.columns), StaggeredGridLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(mImageAdapter);
 
-        //todo change to Retrofit
-        flickrHelper.processRequestSearch(FlickrHelper.ARG_USER_ID, userId, new RequestLoadListener() {
-            @Override
-            public void onLoad(byte[] responseBody) {
-                for (int i = 0; i < flickrHelper.getJSONArray(responseBody, "photos", "photo").length(); i++) {
-                    Log.d("myLog", flickrHelper.getValue(responseBody, "photos", "photo", i, "id"));
-                    flickrImagesId.add(flickrHelper.getValue(responseBody, "photos", "photo", i, "id"));
-                }
-                mImageAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFail(int statusCode, Throwable error) {
-
-            }
-        });
+        flickrAPI.getPhotosByAuthors(FlickrHelper.METHOD_SEARCH, userId)
+                .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .map(photosObject -> photosObject.getPhotos().getPhoto())
+                .flatMap(Observable::from)
+                .doOnCompleted(() -> mImageAdapter.notifyDataSetChanged())
+                .subscribe(
+                        photo -> flickrImagesId.add(photo.getId()),
+                        e -> Log.d("myLog", e.fillInStackTrace().toString())
+                );
     }
 
     @Override
@@ -152,13 +139,11 @@ public class AuthorPageActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.author_subscribe_btn:
-                //todo animation gone
                 mAnimationController.replace(R.anim.slide_out_right, android.R.anim.slide_in_left, subscribeBtn, unsubscribeBtn);
                 flickrDB.addFavourite(mAuthorFlickrId, FlickrDatabase.FAVOURITE_AUTHOR);
                 isAuthorFavourite = !isAuthorFavourite;
                 break;
             case R.id.author_unsubscribe_btn:
-                //todo animation gone
                 mAnimationController.replace(R.anim.slide_out_left, R.anim.slide_in_right, unsubscribeBtn, subscribeBtn);
                 flickrDB.removeFavourite(mAuthorFlickrId, FlickrDatabase.FAVOURITE_AUTHOR);
                 isAuthorFavourite = !isAuthorFavourite;

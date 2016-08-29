@@ -14,7 +14,7 @@ import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.core.License;
 import com.beautiful_wallpapers_hd_qhd.core.entity.Author;
 import com.beautiful_wallpapers_hd_qhd.core.entity.FlickrImageEXIF;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -70,36 +70,33 @@ public class WallpaperInstaller {
     }
 
     public Thread setWallpapersFromService(final String url){
-        return new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if(!Thread.currentThread().isInterrupted()){
-                    imageLoader.loadImage(url, new ImageLoadingListener() {
-                        @Override
-                        public void onLoadingStarted(String s, View view) {
+        return new Thread(() -> {
+            if(!Thread.currentThread().isInterrupted()){
+                imageLoader.loadImage(url, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String s, View view) {
 
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                        try {
+                            installWallpaper(bitmap);
+                        } catch (IOException e) {
+                            Log.d("WI", "setWallpapersFromService:\n"+e.getMessage());
                         }
+                    }
 
-                        @Override
-                        public void onLoadingFailed(String s, View view, FailReason failReason) {
+                    @Override
+                    public void onLoadingCancelled(String s, View view) {
 
-                        }
-
-                        @Override
-                        public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                            try {
-                                installWallpaper(bitmap);
-                            } catch (IOException e) {
-                                Log.d("WI", "setWallpapersFromService:\n"+e.getMessage());
-                            }
-                        }
-
-                        @Override
-                        public void onLoadingCancelled(String s, View view) {
-
-                        }
-                    });
-                }
+                    }
+                });
             }
         });
     }

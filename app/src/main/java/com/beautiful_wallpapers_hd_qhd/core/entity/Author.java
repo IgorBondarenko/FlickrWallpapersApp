@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.core.License;
-import com.beautiful_wallpapers_hd_qhd.core.flickr.FlickrHelper;
 
 /**
  * Created by Igor on 13.04.2016.
