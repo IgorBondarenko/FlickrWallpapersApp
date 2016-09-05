@@ -146,6 +146,15 @@
             </intent-filter>
         </activity>
 
+        <!--todo-->
+        <activity android:name=".activity.test.Preview"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="TEST_VIEW_PAGER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <!-- receivers -->
         <receiver
             android:name=".core.receiver.notification.NotificationReceiver" >

@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -35,6 +37,7 @@ import android.widget.Toast;
 
 import com.beautiful_wallpapers_hd_qhd.R;
 import com.beautiful_wallpapers_hd_qhd.activity.dialog.ExitDialog;
+import com.beautiful_wallpapers_hd_qhd.activity.test.Preview;
 import com.beautiful_wallpapers_hd_qhd.core.Advertising;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.AuthorAdapter;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.ImageRecyclerAdapter;
@@ -44,9 +47,9 @@ import com.beautiful_wallpapers_hd_qhd.core.controller.SharedPreferencesControll
 import com.beautiful_wallpapers_hd_qhd.core.database.FlickrDatabase;
 import com.beautiful_wallpapers_hd_qhd.core.di.DaggerAppComponent;
 import com.beautiful_wallpapers_hd_qhd.core.di.MyModule;
-import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrHelper;
 import com.beautiful_wallpapers_hd_qhd.core.receiver.notification.NotificationReceiver;
 import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrAPI;
+import com.beautiful_wallpapers_hd_qhd.core.retrofit.FlickrHelper;
 import com.beautiful_wallpapers_hd_qhd.core.retrofit.enteties.PhotosObject;
 import com.google.android.gms.common.AccountPicker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -59,6 +62,7 @@ import org.onepf.oms.appstore.googleUtils.Purchase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -106,6 +110,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ActivityCompat.setExitSharedElementCallback(this, ExitTransitionCallback);
+
         DaggerAppComponent.builder().myModule(new MyModule(this)).build().inject(this);
         ButterKnife.bind(this);
 
@@ -135,6 +141,19 @@ public class MainActivity extends AppCompatActivity
             new Advertising(this).loadSmartBanner(R.id.main_ad_stub, R.id.main_ad_view);
         }
     }
+
+    private final SharedElementCallback ExitTransitionCallback = new SharedElementCallback() {
+        @Override
+        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+            if (Preview.SelectedIndex < 0) {
+                // When transitioning out, use the view already specified in makeSceneTransition
+            } else {
+                // When transitioning back in, use the thumbnail at index the user had swiped to in the pager activity
+                sharedElements.put(names.get(0), mImageAdapter.getViewAtIndex(mGridViewImages, Preview.SelectedIndex));
+                Preview.SelectedIndex = -1;
+            }
+        }
+    };
 
     private ItemTouchHelper itemTouchHelper;
     private Paint p = new Paint();

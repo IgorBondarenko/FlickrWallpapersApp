@@ -30,6 +30,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -103,11 +104,23 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
             final Intent previewIntent = new Intent(mContext.getResources().getString(R.string.preview_activity));
             previewIntent.putExtra(mContext.getString(R.string.extra_flickr_image_id), mImageFlickrIds.get(position));
 
+            /*
             if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
                 mAnimationController.transition(holder.thumbnailImage, mContext.getString(R.string.transition_image), previewIntent);
             } else{
                 mAnimationController.zoomCenter(holder.thumbnailImage, previewIntent);
+            }*/
+
+            Intent intent = new Intent("TEST_VIEW_PAGER");
+            intent.putExtra("list", (ArrayList<String>)mImageFlickrIds);
+            intent.putExtra("list_pos", position);
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+                mAnimationController.transition(holder.thumbnailImage, mContext.getString(R.string.transition_image), intent);
+            } else{
+                mAnimationController.zoomCenter(holder.thumbnailImage, previewIntent);
             }
+
+            //mContext.startActivity(intent);
         });
     }
 
@@ -164,4 +177,21 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
             }
         });
     }
+
+    public View getViewAtIndex(RecyclerView recycler, int index) {
+        if (index >= 0) {
+            for (int i=0; i<recycler.getChildCount(); i++) {
+                View child = recycler.getChildAt(i);
+
+                int pos = recycler.getChildAdapterPosition(child);
+                if (pos == index) {
+                    return child;
+                }
+            }
+        }
+
+        // There is no view for this index - it is offscreen
+        return null;
+    }
+
 }

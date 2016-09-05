@@ -7,6 +7,9 @@ import com.beautiful_wallpapers_hd_qhd.activity.PreviewActivity;
 import com.beautiful_wallpapers_hd_qhd.activity.ScalingImageActivity;
 import com.beautiful_wallpapers_hd_qhd.activity.dialog.AutoUpdateDialog;
 import com.beautiful_wallpapers_hd_qhd.activity.dialog.BuyProDialog;
+import com.beautiful_wallpapers_hd_qhd.activity.test.PlaceholderFragment;
+import com.beautiful_wallpapers_hd_qhd.activity.test.Preview;
+import com.beautiful_wallpapers_hd_qhd.activity.test.PreviewImageFragment;
 import com.beautiful_wallpapers_hd_qhd.core.FirebaseAnalytic;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.AuthorAdapter;
 import com.beautiful_wallpapers_hd_qhd.core.adapter.ImageRecyclerAdapter;
@@ -32,5 +35,9 @@ public interface AppComponent {
     void inject(FirebaseAnalytic component);
     void inject(BuyProDialog dialog);
     void inject(UpdateWallpapersService service);
+
+    void inject(PreviewImageFragment fragment);
+    void inject(PlaceholderFragment fragment);
+    void inject(Preview activity);
 
 }
