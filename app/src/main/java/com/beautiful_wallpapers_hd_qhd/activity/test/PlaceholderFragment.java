@@ -56,6 +56,7 @@ public class PlaceholderFragment extends Fragment {
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putString(ARG_FLICKR_IMAGE_ID, flickrImageId);
 
+
         fragment.setArguments(args);
         return fragment;
     }
